@@ -256,7 +256,20 @@ window.addEventListener("load",function(){
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderScanPack);else renderScanPack();
 })();
-</script></body></html>
+</script><style>
+/* Final layout rules: cards size to content instead of filling the page. */
+.screen > .grid { align-items: start !important; grid-auto-rows: max-content !important; }
+.screen > .grid > .phone,
+.screen > .grid > .phone[id] { min-height: 0 !important; height: auto !important; align-self: start !important; }
+#mini > .grid > .mini-extra-menu { min-height: 0 !important; height: auto !important; }
+#mini > .grid > .mini-extra-menu .mini-bottom { margin-top: 24px !important; }
+#app .phone.scan-pack-final { min-height: 0 !important; height: auto !important; }
+.receiver-modal-mask, .scan-billing-mask, .offline-collect-mask,
+.remaining-modal-mask, .print-picker-mask, .void-record-mask,
+.void-code-mask, .code-query-mask {
+  position: absolute !important; inset: 0 !important; overflow: auto !important;
+}
+</style>
 <script>
 window.addEventListener('load', function () {
   setTimeout(function () {
@@ -2048,3 +2061,4 @@ function placeVoidRecords() {
 if (document.readyState === 'complete') placeVoidRecords();
 else window.addEventListener('load', placeVoidRecords);
 </script>
+</body></html>
