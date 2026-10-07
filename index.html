@@ -257,7 +257,8 @@ window.addEventListener("load",function(){
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderScanPack);else renderScanPack();
 })();
 </script><style>
-/* Final layout rules: cards size to content instead of filling the page. */
+  /* Final layout rules: cards size to content instead of filling the page. */
+  .mini-topbar::before { content: "客户小程序拼包模块入库"; }
 .screen > .grid { align-items: start !important; grid-auto-rows: max-content !important; }
 .screen > .grid > .phone,
 .screen > .grid > .phone[id] { min-height: 0 !important; height: auto !important; align-self: start !important; }
