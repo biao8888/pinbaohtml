@@ -258,7 +258,7 @@ window.addEventListener("load",function(){
 })();
 </script><style>
   /* Final layout rules: cards size to content instead of filling the page. */
-  .mini-topbar::before { content: "客户小程序拼包模块入库"; }
+  .mini-topbar::before { content: "客户小程序拼包模块入口"; }
 .screen > .grid { align-items: start !important; grid-auto-rows: max-content !important; }
 .screen > .grid > .phone,
 .screen > .grid > .phone[id] { min-height: 0 !important; height: auto !important; align-self: start !important; }
@@ -2047,6 +2047,98 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initVoidRecords);
 } else {
   initVoidRecords();
+}
+function addBilledListSummary() {
+  var page = document.getElementById('billed-list');
+  if (!page || page.querySelector('.billed-summary')) return;
+  var cards = Array.from(page.querySelectorAll('.billed-batch-card'));
+  if (!cards.length) return;
+  var scanned = 0;
+  var remaining = 0;
+  var paid = 0;
+  var paidAmounts = [200, 160];
+  cards.forEach(function (card, index) {
+    card.querySelectorAll('.billed-goods-table tbody tr').forEach(function (row) {
+      scanned += Number(row.children[2] && row.children[2].textContent.trim()) || 0;
+      remaining += Number(row.children[3] && row.children[3].textContent.trim()) || 0;
+    });
+    paid += Number(card.dataset.paidAmount || paidAmounts[index] || 0);
+  });
+  var summary = document.createElement('div');
+  summary.className = 'billed-summary';
+  summary.innerHTML = '<span>运单数 <b>' + cards.length + '</b></span>' +
+    '<span>已扫总数 <b>' + scanned + '</b></span>' +
+    '<span class="' + (remaining > 0 ? 'has-remaining' : '') + '">余件总数 <b>' + remaining + '</b></span>' +
+    '<span>已收款 <b>¥' + paid + '</b></span>';
+  page.appendChild(summary);
+}
+function addPackListSummary() {
+  var page = document.getElementById('pack-list');
+  if (!page || page.querySelector('.pack-summary')) return;
+  var cards = Array.from(page.querySelectorAll('.pack-card'));
+  if (!cards.length) return;
+  var pending = 0;
+  cards.forEach(function (card) {
+    Array.from(card.querySelectorAll(':scope>.row')).forEach(function (row) {
+      var label = row.querySelector('span:first-child');
+      var value = row.querySelector('span:last-child');
+      if (label && value && label.textContent.trim() === '待扫件数') {
+        pending += Number(value.textContent.replace(/[^0-9]/g, '')) || 0;
+      }
+    });
+  });
+  var summary = document.createElement('div');
+  summary.className = 'pack-summary';
+  summary.innerHTML = '<span>收货人数 <b>' + cards.length + '</b></span><span>待扫件数 <b>' + pending + '件</b></span>';
+  page.appendChild(summary);
+}
+function initEmployeeCreateCode() {
+  var appGrid = document.querySelector('#app>.grid');
+  var workbench = appGrid && Array.from(appGrid.querySelectorAll('.phone')).find(function (page) {
+    var title = page.querySelector('h2');
+    return title && title.textContent.trim() === '拼包工作台';
+  });
+  if (!appGrid || !workbench || document.getElementById('employee-create-code')) return;
+  var page = document.createElement('div');
+  page.className = 'phone employee-create-code-page';
+  page.id = 'employee-create-code';
+  page.innerHTML = '<h2>新增件码</h2><div class="row"><span>当前账号组织</span><b>洪合拼包站</b></div><div class="field-inline create-code-field"><label>收货人 <i>*</i></label><select class="create-code-recipient"><option value="wang">王先生（VIP号9527）</option><option value="li">李女士（VIP号9528）</option><option value="other">其他</option></select></div><div class="create-code-other hidden"><div class="field-inline create-code-field"><label>收货人 <i>*</i></label><input placeholder="请输入收货人" /></div><div class="field-inline create-code-field"><label>电话 <i>*</i></label><input placeholder="请输入电话" /></div><div class="field-inline create-code-field"><label>详细地址 <i>*</i></label><input placeholder="请输入详细地址" /></div></div><div class="field-inline create-code-field"><label>收货人库位</label><input class="create-code-location" value="洪合-H03-14" disabled /></div><div class="field-inline create-code-field"><label>发货档口/厂家 <i>*</i></label><input value="杭州某档口" /></div><div class="field-inline create-code-field"><label>内物件数</label><input value="2" /></div><div class="field create-code-photo-field"><label>外观照片（选填）</label><input type="file" /></div><label class="create-code-print"><input type="checkbox" checked /> 创建后打印件码标签</label><button type="button" class="btn create-code-submit">创建件码</button>';
+  workbench.insertAdjacentElement('afterend', page);
+  page.style.setProperty('grid-column', '1 / -1', 'important');
+  page.style.setProperty('grid-row', 'auto', 'important');
+  page.style.setProperty('align-self', 'start', 'important');
+  var recipient = page.querySelector('.create-code-recipient');
+  var other = page.querySelector('.create-code-other');
+  var location = page.querySelector('.create-code-location');
+  recipient.onchange = function () {
+    var isOther = recipient.value === 'other';
+    other.classList.toggle('hidden', !isOther);
+    location.value = isOther ? '其他' : recipient.value === 'li' ? '洪合-H03-13' : '洪合-H03-14';
+  };
+  page.querySelector('.create-code-submit').onclick = function () {
+    var print = page.querySelector('.create-code-print input').checked;
+    var tip = page.querySelector('.create-code-success');
+    if (!tip) { tip = document.createElement('div'); tip.className = 'success create-code-success'; page.querySelector('.create-code-submit').before(tip); }
+    tip.textContent = '已生成件码 HH2609290006，来源：员工创建，已进入待集包列表。' + (print ? '已按设置打印件码标签。' : '未打印件码标签。');
+  };
+  var entry = Array.from(workbench.querySelectorAll('.workbench-actions .btn')).find(function (button) { return button.textContent.trim() === '新增件码'; });
+  if (entry) entry.onclick = function () { page.scrollIntoView(); };
+}
+var employeeCreateCodeStyle = document.createElement('style');
+employeeCreateCodeStyle.textContent = '.employee-create-code-page{font-size:13px}.employee-create-code-page .create-code-field{margin:10px 0}.employee-create-code-page .create-code-field label{flex:0 0 112px;font-size:13px;white-space:nowrap}.employee-create-code-page .create-code-field input,.employee-create-code-page .create-code-field select{flex:1;min-width:0;box-sizing:border-box;height:34px;padding:6px 8px;text-align:right;border:1px solid #cfd6dd;border-radius:5px;background:#fff;color:#1f2937}.employee-create-code-page .create-code-field input:disabled{background:#f1f3f5;color:#6b7280}.employee-create-code-page .create-code-field i{color:#d93025;font-style:normal}.employee-create-code-page .create-code-photo-field{margin:10px 0}.employee-create-code-page .create-code-photo-field label{display:block;margin-bottom:5px;font-size:13px}.employee-create-code-page .create-code-photo-field input{width:100%;box-sizing:border-box}.employee-create-code-page .create-code-print{display:flex;align-items:center;gap:6px;margin:12px 0;font-size:13px}.employee-create-code-page .create-code-submit{width:100%;margin-top:8px;border:0}.employee-create-code-page .create-code-success{margin:8px 0;font-size:12px;line-height:18px}';
+document.head.appendChild(employeeCreateCodeStyle);
+if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initEmployeeCreateCode); window.addEventListener('load', initEmployeeCreateCode); } else { initEmployeeCreateCode(); }
+var billedSummaryStyle = document.createElement('style');
+billedSummaryStyle.textContent = '.billed-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:6px;padding:6px 8px;background:#f4f6f8;border:1px solid #e5e7eb;border-radius:4px;color:#6b7280;font-size:11px;line-height:16px;white-space:nowrap}.billed-summary span{min-width:0;overflow:hidden;text-overflow:ellipsis}.billed-summary b{margin-left:2px;color:#1f2937;font-weight:600}.billed-summary .has-remaining b{color:#d93025}.pack-summary{display:flex;justify-content:flex-end;gap:16px;margin-top:6px;padding:6px 8px;background:#f4f6f8;border:1px solid #e5e7eb;border-radius:4px;color:#6b7280;font-size:11px;line-height:16px;white-space:nowrap}.pack-summary b{margin-left:2px;color:#1f2937;font-weight:600}';
+document.head.appendChild(billedSummaryStyle);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', addBilledListSummary);
+  document.addEventListener('DOMContentLoaded', addPackListSummary);
+  window.addEventListener('load', addBilledListSummary);
+  window.addEventListener('load', addPackListSummary);
+} else {
+  addBilledListSummary();
+  addPackListSummary();
 }
 function placeVoidRecords() {
   setTimeout(function () {
