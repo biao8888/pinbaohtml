@@ -1,0 +1,2050 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>物流拼包低保真原型</title><style>
+body{font-family:Arial,"Microsoft YaHei",sans-serif;background:#f4f6f8;color:#1f2937;margin:0}header{background:#0f3d5e;color:white;padding:24px 32px}h1{margin:0 0 8px;font-size:24px}.tabs{display:flex;gap:8px;margin:20px 32px}.tabs button{border:0;background:white;padding:10px 16px;border-radius:6px;cursor:pointer}.tabs button.active{background:#0f3d5e;color:white}.screen{display:none;margin:0 32px 32px}.screen.active{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}.phone{background:#fff;border:1px solid #d5dbe1;border-radius:16px;padding:18px;min-height:420px;box-shadow:0 3px 10px #0000000d}.phone h2{font-size:17px;margin-top:0;border-bottom:1px solid #e5e7eb;padding-bottom:10px}.row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #eef0f2}.tag{background:#e8f1f7;color:#0f3d5e;padding:3px 8px;border-radius:12px;font-size:12px}.btn{background:#0f3d5e;color:white;padding:11px;border-radius:6px;text-align:center;margin-top:14px;cursor:pointer}.btn.secondary{background:#e8f1f7;color:#0f3d5e}.field{margin:10px 0}.field label{display:block;font-size:12px;color:#6b7280;margin-bottom:4px}.field input,.field select{width:100%;box-sizing:border-box;padding:8px;border:1px solid #cfd6dd;border-radius:5px}.receiver{border:1px solid #cfd6dd;border-radius:8px;padding:10px;margin:10px 0;background:#fafbfc}.receiver h3{font-size:14px;margin:0 0 8px}.warn{background:#fff3cd;padding:10px;border-radius:6px;margin:10px 0}.check{margin:12px 0}.muted{color:#6b7280;font-size:13px}.steps{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.step{background:#eef2f7;padding:6px 10px;border-radius:4px;font-size:12px}.note{margin:20px 32px;color:#4b5563;font-size:13px}.hidden{display:none}.success{background:#e7f6ed;color:#16733b;padding:10px;border-radius:6px;margin-top:10px}
+</style><style>#mini>.grid>.phone:nth-child(2) .receiver .row:nth-last-child(2){display:none}</style><style>#mini>.grid>.phone:nth-child(4){display:none}</style><style>.steps .step{border:1px solid #d5dbe1;background:#fff;color:#6b7280;cursor:pointer}.steps .step.active{background:#0f3d5e;color:#fff;border-color:#0f3d5e}</style><style>.btn.secondary{background:#e8f1f7;color:#0f3d5e;border:1px solid #1f2937;border-radius:5px;text-align:center}</style><style>.order-actions{display:flex;gap:8px}.order-actions .btn{flex:1;margin-top:14px}.order-actions .primary-action{flex:3}</style><style>.order-actions .btn{box-sizing:border-box;padding-left:4px;padding-right:4px;white-space:nowrap;font-size:13px}.order-actions .btn:first-child{flex:0 0 calc(25% - 6px)}.order-actions .primary-action{flex:0 0 calc(75% - 2px)}</style><style>.receiver-picker{width:100%;box-sizing:border-box;padding:8px;border:1px solid #cfd6dd;border-radius:5px;background:#fff;text-align:left;cursor:pointer}.phone{position:relative}.receiver-modal-mask.hidden{display:none!important}.receiver-modal-mask{position:absolute;inset:0;background:#0006;display:flex;align-items:flex-end;justify-content:center;z-index:20}.receiver-modal{width:min(420px,100%);background:#fff;border-radius:16px 16px 0 0;padding:18px;box-sizing:border-box}.receiver-filter{width:100%;box-sizing:border-box;padding:9px;border:1px solid #cfd6dd;border-radius:5px;margin-bottom:8px}.receiver-option{padding:13px;border-bottom:1px solid #eef0f2;cursor:pointer}</style><style>#receivers .success{display:none!important}</style><style>.receiver .field:has(.receiver-picker){display:flex;align-items:center;gap:8px}.receiver .field:has(.receiver-picker) label{flex:0 0 30%;margin:0}.receiver .field:has(.receiver-picker) .receiver-picker{flex:1;width:auto}</style><style>.field-inline{display:flex;align-items:center;gap:8px}.field-inline label{flex:0 0 30%;margin:0}.field-inline input{flex:1}</style><style>#mini>.grid>.phone:first-child{font-size:14px;line-height:1.4}#mini>.grid>.phone:first-child h2{font-size:20px;line-height:1.3;margin-bottom:16px}#mini>.grid>.phone:first-child .row{min-height:40px;box-sizing:border-box;align-items:center;padding:8px 0}#mini>.grid>.phone:first-child .field{margin:12px 0}#mini>.grid>.phone:first-child .field label{font-size:13px;line-height:20px}#mini>.grid>.phone:first-child input,#mini>.grid>.phone:first-child select,#mini>.grid>.phone:first-child .receiver-picker{height:36px;min-height:36px;box-sizing:border-box;font-size:14px;line-height:20px}#mini>.grid>.phone:first-child .receiver{padding:12px;margin:12px 0;border-radius:8px}#mini>.grid>.phone:first-child .receiver h3{font-size:15px;line-height:22px;margin:0 0 10px}#mini>.grid>.phone:first-child .receiver .field{margin:9px 0}#mini>.grid>.phone:first-child .receiver input[type=file]{height:42px;padding:7px}#mini>.grid>.phone:first-child .muted{font-size:12px;line-height:18px}#mini>.grid>.phone:first-child .order-actions{margin-top:14px;align-items:stretch}#mini>.grid>.phone:first-child .order-actions .btn{height:40px;min-height:40px;padding:9px 4px;margin-top:0;line-height:20px}</style><style>#mini>.grid>.phone:first-child input,#mini>.grid>.phone:first-child select,#mini>.grid>.phone:first-child .receiver-picker{text-align:right}#mini>.grid>.phone:first-child .receiver-picker{position:relative;padding-right:26px}</style><style>#mini>.grid>.phone:first-child .receiver-picker{flex:0 0 68%;width:68%;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;padding-right:28px;position:relative}#mini>.grid>.phone:first-child .receiver-picker::after{content:"›";position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:18px;color:#6b7280}</style><style>#mini>.grid>.phone:first-child .field-inline label{flex:0 0 36%;white-space:nowrap;font-size:12px}#mini>.grid>.phone:first-child .field-inline input{min-width:0}</style><style>#mini>.grid>.phone:first-child>.row>span:first-child{flex:0 0 34%;white-space:nowrap}#mini>.grid>.phone:first-child>.row>select{flex:1;width:auto;min-width:0}#mini>.grid>.phone:first-child .field-inline label{flex:0 0 34%;white-space:nowrap}#mini>.grid>.phone:first-child .field-inline input{flex:1;min-width:0}#mini>.grid>.phone:first-child .receiver .field:has(.receiver-picker) label{flex:0 0 34%}#mini>.grid>.phone:first-child .receiver .field:has(.receiver-picker) .receiver-picker{flex:1;width:auto;min-width:0}</style><style>#mini>.grid>.phone:first-child input:not([type=file]),#mini>.grid>.phone:first-child select,#mini>.grid>.phone:first-child .receiver-picker{background:#fff;color:#1f2937;border:1px solid #cfd6dd;border-radius:5px;box-shadow:none;outline:none}#mini>.grid>.phone:first-child input:not([type=file]):focus,#mini>.grid>.phone:first-child select:focus,#mini>.grid>.phone:first-child .receiver-picker:focus{border-color:#0f3d5e;box-shadow:0 0 0 1px #0f3d5e}#mini>.grid>.phone:first-child select{appearance:auto}</style><style>#mini>.grid>.phone:first-child .field label,#mini>.grid>.phone:first-child>.row>span:first-child,#mini>.grid>.phone:first-child .receiver .row>span:first-child{font-size:14px;color:#1f2937;font-weight:400}#mini>.grid>.phone:first-child .field label i,#mini>.grid>.phone:first-child .row i{color:#d93025!important}</style><style>#mini>.grid>.phone:first-child #receivers label,#mini>.grid>.phone:first-child #receivers .field label{color:#1f2937!important;font-size:14px!important;font-weight:400!important}</style><style>#mini>.grid>.phone:first-child select,#mini>.grid>.phone:first-child .receiver-picker{height:36px;min-height:36px;font-size:14px;color:#1f2937;background-color:#fff;border:1px solid #cfd6dd;border-radius:5px;line-height:20px}#mini>.grid>.phone:first-child select{appearance:none;padding:8px 28px 8px 8px;background-image:linear-gradient(45deg,transparent 50%,#6b7280 50%),linear-gradient(135deg,#6b7280 50%,transparent 50%);background-position:calc(100% - 12px) 50%,calc(100% - 7px) 50%;background-size:5px 5px;background-repeat:no-repeat}#mini>.grid>.phone:first-child .receiver-picker::after{color:#6b7280;font-size:18px}#mini>.grid>.phone:first-child i{font-style:normal;color:#d93025!important}</style><style>.receiver-filter{text-align:center;color:#6b7280;font-size:14px}</style><style>.receiver-modal .receiver-filter,.receiver-modal .receiver-filter::placeholder{text-align:center!important}.receiver-modal .receiver-filter{display:block!important;margin-left:auto!important;margin-right:auto!important}</style><style>#mini>.grid>.phone:first-child #receivers .receiver .field:has(>label:first-child){display:flex;align-items:center;gap:8px}#mini>.grid>.phone:first-child #receivers .receiver .field:has(>label:first-child)>label{flex:0 0 34%;margin:0;white-space:nowrap;font-size:14px!important;color:#1f2937!important}#mini>.grid>.phone:first-child #receivers .receiver .field:has(>label:first-child)>input,#mini>.grid>.phone:first-child #receivers .receiver .field:has(>label:first-child)>select,#mini>.grid>.phone:first-child #receivers .receiver .field:has(>label:first-child)>.receiver-picker{flex:1;width:auto;min-width:0;box-sizing:border-box}</style><style>#mini>.grid>.phone:first-child #receivers .receiver .field:has(input[type=file]){display:block!important}#mini>.grid>.phone:first-child #receivers .receiver .field:has(input[type=file]) label{display:block;margin-bottom:4px}</style><style>#mini>.grid>.phone:first-child>.row>span:first-child{flex:0 0 38%}#mini>.grid>.phone:first-child .field-inline label{flex:0 0 38%}#mini>.grid>.phone:first-child #receivers .receiver .field:has(>label:first-child)>label{flex:0 0 38%}#mini>.grid>.phone:first-child #receivers .receiver .field:has(>label:first-child)>input,#mini>.grid>.phone:first-child #receivers .receiver .field:has(>label:first-child)>select,#mini>.grid>.phone:first-child #receivers .receiver .field:has(>label:first-child)>.receiver-picker{flex:1;min-width:0;width:auto}</style><style>#mini>.grid>.phone:first-child{overflow:hidden}#mini>.grid>.phone:first-child input,#mini>.grid>.phone:first-child select,#mini>.grid>.phone:first-child .receiver-picker,#mini>.grid>.phone:first-child .btn{box-sizing:border-box;min-width:0;max-width:100%}#mini>.grid>.phone:first-child .order-actions{width:100%;min-width:0;gap:8px}#mini>.grid>.phone:first-child .order-actions .btn{min-width:0;overflow:hidden;text-overflow:ellipsis}#mini>.grid>.phone:first-child .order-actions .btn:first-child{flex:1 1 25%}#mini>.grid>.phone:first-child .order-actions .primary-action{flex:3 1 75%}</style><style>#mini>.grid>.phone:first-child .receiver-picker::after{content:"▼";right:10px;font-size:11px;color:#6b7280}#mini>.grid>.phone:first-child select{background-image:linear-gradient(45deg,transparent 50%,#6b7280 50%),linear-gradient(135deg,#6b7280 50%,transparent 50%)} </style><style>#mini>.grid>.phone:first-child>.row,#mini>.grid>.phone:first-child>.field-inline,#mini>.grid>.phone:first-child #receivers .receiver .field:not(:has(input[type=file])){display:flex;align-items:center;gap:8px}#mini>.grid>.phone:first-child>.row>span:first-child,#mini>.grid>.phone:first-child>.field-inline>label,#mini>.grid>.phone:first-child #receivers .receiver .field:not(:has(input[type=file]))>label{flex:0 0 120px;width:120px;box-sizing:border-box;white-space:nowrap;margin:0;font-size:14px;line-height:20px}#mini>.grid>.phone:first-child>.row>select,#mini>.grid>.phone:first-child>.field-inline>input,#mini>.grid>.phone:first-child #receivers .receiver .field:not(:has(input[type=file]))>input,#mini>.grid>.phone:first-child #receivers .receiver .field:not(:has(input[type=file]))>select,#mini>.grid>.phone:first-child #receivers .receiver .field:not(:has(input[type=file]))>.receiver-picker{flex:1 1 auto;width:auto;min-width:0;box-sizing:border-box;height:36px;min-height:36px}</style><style>:root{--online-blue:#0b3275;--online-orange:#ff941f;--online-bg:#f4f5f7}body{background:var(--online-bg)}header{background:var(--online-blue)}.tabs button.active,.steps .step.active{background:var(--online-blue)!important;border-color:var(--online-blue)!important}.btn:not(.secondary){background:var(--online-orange)!important}.btn.secondary{background:#fff7ed!important;color:var(--online-blue)!important;border-color:#d7dce5!important}.inline-btn{color:var(--online-blue);border-color:#cfd6dd}.tag{background:#e9f0ff;color:var(--online-blue)}a{color:var(--online-blue)!important}.mini-extra-menu{border-top:4px solid var(--online-blue)}</style><style>.mini-extra-menu{min-height:170px}.mini-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}.mini-feature{text-align:center;color:#6b7280;font-size:13px;cursor:pointer}.mini-feature-icon{width:42px;height:42px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:#0f3d5e;font-size:32px;font-weight:700}</style><style>.mini-extra-menu{grid-column:3;grid-row:2;padding:0;overflow:hidden;min-height:520px;background:#f4f6f8}.mini-topbar{height:72px;background:#0b347c;color:#fff;padding:16px;box-sizing:border-box;text-align:center;font-size:14px}.mini-profile{height:88px;background:#fff;margin:0 10px 10px;border-radius:12px;padding:28px 24px;box-sizing:border-box;font-size:22px}.mini-existing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:#fff;margin:0 10px;border-radius:10px;padding:22px 10px}.mini-feature{text-align:center;color:#8a8f98;font-size:12px;cursor:pointer}.mini-feature-icon{width:30px;height:30px;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;color:#0f3d5e;font-size:25px;font-weight:700}.mini-bottom{margin:140px 10px 0;background:#0b347c;color:#fff;border-radius:6px;padding:10px;text-align:center}</style><style>#mini>.grid{grid-template-columns:repeat(3,minmax(290px,1fr));align-items:start}#mini>.grid>.mini-extra-menu{grid-column:3!important;grid-row:2!important;width:auto;min-width:0}</style><style>.inline-btn{display:inline-flex!important;align-items:center;justify-content:center;min-width:58px!important;height:30px!important;padding:0 8px!important;border:1px solid #6b7280!important;border-radius:4px!important;background:#fff!important;color:#1f2937!important;font-size:13px!important;line-height:20px!important;cursor:pointer!important;vertical-align:middle}.inline-btn:hover{background:#e8f1f7}</style><style>.address-book-button{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:60px!important;height:30px!important;margin:0!important;padding:0!important;border:1px solid #6b7280!important;border-radius:4px!important;background:#0f3d5e!important;color:#fff!important;font-family:inherit!important;font-size:13px!important;line-height:30px!important;cursor:pointer!important;box-sizing:border-box!important}</style><style>.app-link{cursor:pointer}.app-link:hover{background:#e8f1f7}.phone[id]{scroll-margin-top:20px}</style><style>#pickup-list .row span:last-child{max-width:68%;font-size:13px;line-height:20px;white-space:normal;overflow-wrap:anywhere;text-align:right}#pickup-list .row:has(span:first-child){align-items:flex-start}</style><style>.call-button{display:inline-block;margin-left:6px;padding:2px 7px;border:1px solid #0f3d5e;border-radius:4px;color:#0f3d5e;background:#e8f1f7;text-decoration:none;font-size:12px;line-height:20px;white-space:nowrap}</style><style>#pickup-list .btn.secondary{display:inline-block;width:auto;margin-top:10px;padding:6px 12px;font-size:12px;line-height:18px;box-sizing:border-box}</style><style>#pickup-list .pickup-recipient .row:not(:first-of-type){display:none}#pickup-list .pickup-recipient .pickup-expand{display:inline-block;width:auto;margin-top:8px;padding:5px 10px;font-size:12px;line-height:18px}#pickup-list .pickup-recipient.is-expanded .row:not(:first-of-type){display:flex}</style><style>html,body{min-width:1200px}header{min-width:1200px;box-sizing:border-box}.tabs{min-width:1136px}.screen{min-width:1136px}.screen>.grid{min-width:1136px;grid-template-columns:repeat(3,minmax(320px,1fr))}.phone{min-width:320px;box-sizing:border-box}.mini-extra-menu{min-width:320px!important}</style><style>#pickup-list>.receiver>.pickup-recipient{padding:8px 10px;margin:8px 0}#pickup-list>.receiver>.pickup-recipient h3{display:flex;justify-content:space-between;align-items:center;margin:0;font-size:13px}#pickup-list>.receiver>.pickup-recipient h3:after{content:""}#pickup-list>.receiver>.pickup-recipient .row{padding:5px 0}#pickup-list>.receiver>.pickup-recipient .pickup-expand{display:none}#pickup-list>.receiver>.pickup-recipient .row:not(:first-of-type){display:none}#pickup-list>.receiver.pickup-expanded>.pickup-recipient .row:not(:first-of-type){display:flex}#pickup-list .pickup-order-detail{display:inline-block;width:auto;margin-top:10px;padding:6px 12px;font-size:12px;line-height:18px}</style><style>#pickup-list>.receiver>.pickup-recipient{border:0;background:transparent;border-radius:0;padding:0;margin:0}#pickup-list>.receiver>.pickup-recipient h3{font-size:14px;font-weight:400;line-height:20px;padding:8px 0;margin:0;border-bottom:1px solid #eef0f2}#pickup-list>.receiver>.pickup-recipient h3 span:last-child{font-weight:400;text-align:right}</style><style>#pickup-list>.receiver>.pickup-recipient h3{display:grid!important;grid-template-columns:120px minmax(0,1fr);align-items:center;font-size:14px!important;font-weight:400!important;line-height:20px;padding:8px 0;margin:0;border-bottom:1px solid #eef0f2}#pickup-list>.receiver>.pickup-recipient h3 span:last-child{text-align:right;font-size:14px!important;font-weight:400!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#pickup-list>.receiver>.pickup-recipient .row{display:none!important}#pickup-list>.receiver.pickup-expanded>.pickup-recipient .row{display:flex!important;font-size:14px;line-height:20px}</style><style>#pickup-list .photo-view-button{display:inline-block;width:auto;margin:0;padding:4px 9px;font-size:12px;line-height:16px;cursor:pointer}</style><style>#pickup-list .photo-view{display:inline-block;margin-left:8px;padding:2px 8px;border:1px solid #cfd6dd;border-radius:4px;background:#fff;color:#0f3d5e;font-size:12px;line-height:18px;cursor:pointer}</style><style>#pickup-list .pickup-action{display:inline-block;width:auto;margin:10px 0 0 8px;padding:6px 12px;font-size:12px;line-height:18px}</style><style>#pickup-list>.receiver>.btn{display:inline-block!important;width:auto!important;box-sizing:border-box;margin:10px 6px 0 0!important;padding:6px 12px!important;font-size:12px;line-height:18px;vertical-align:middle}#pickup-list>.receiver>.btn:last-of-type{margin-right:0!important}</style><style>#pack-list .pack-card .pack-detail.hidden{display:none}#pack-list .pack-card .pack-detail{margin-top:8px;padding-top:4px;border-top:1px solid #eef0f2}#pack-list .pack-card .btn{display:inline-block;width:auto;margin-right:6px;padding:6px 10px;font-size:12px;line-height:18px}#pack-list .pack-detail-button{margin-top:14px!important}</style><style>#pack-list .package-detail-item{border:1px solid #cfd6dd;border-radius:6px;background:#fff;margin:8px 0;padding:2px 8px}#pack-list .package-detail-item .row{padding:7px 0}#pack-list .package-detail-item .row:first-child{font-weight:600;color:#1f2937}</style><style>#pack-list .pack-detail,#pack-list .package-detail-item,#pack-list .package-detail-item .row{font-size:14px;line-height:20px}#pack-list .package-detail-item .row{display:flex;justify-content:space-between;align-items:center;gap:12px}#pack-list .package-detail-item .row span:last-child{text-align:right}#pack-list .photo-view{display:inline-block;margin-left:8px;padding:2px 8px;border:1px solid #cfd6dd;border-radius:4px;background:#fff;color:#0f3d5e;font-size:12px;line-height:18px;cursor:pointer}</style><style>.workbench-actions{display:grid;grid-template-columns:2fr 3fr 3fr;gap:8px;margin-top:14px}.workbench-actions .btn{min-width:0;margin-top:0;padding:9px 4px;font-size:13px;white-space:nowrap}</style></head>
+<body><header><h1>物流拼包低保真原型</h1><div>客户微信小程序 + 员工 App · 三类网点统一模型</div></header>
+<div class="tabs"><button class="active" onclick="show('mini',this)">微信小程序</button><button onclick="show('app',this)">员工 App</button></div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var page=Array.from(document.querySelectorAll('#app .phone')).find(function(item){var h=item.querySelector('h2');return h&&h.textContent.trim()==='扫码集包';});
+  if(page){page.dataset.scanPackFinal='1';page.classList.add('scan-pack-final');}
+});
+</script>
+<script>
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    var page = document.querySelector('#app .scan-pack-final');
+    var button = page && page.querySelector('.pack-billing-button');
+    if (!page || !button) return;
+    button.onclick = function () {
+      if (page.querySelector('.scan-billing-mask')) return;
+      var remaining = Array.from(page.querySelectorAll('.scan-summary-table td.remaining')).reduce(function (total, cell) {
+        return total + (Number(cell.textContent.trim()) || 0);
+      }, 0);
+      var openChoice = function () {
+        var mask = document.createElement('div');
+        mask.className = 'scan-billing-mask';
+        mask.innerHTML = '<div class="scan-billing-dialog"><h3>集包转开单</h3><div class="row"><span>寄件人</span><span class="scan-billing-select-value">不选</span></div><div class="row"><span>收货人</span><span class="scan-billing-select-value">王先生（VIP号9527）</span></div><div class="scan-billing-dev-hint">开发提示：寄件人默认不选；收货人默认选择收货人1。正式运单仅带入一个寄件人和一个收货人，点击“不选”后由开单员自行填写。</div><div class="scan-billing-actions"><button type="button" class="scan-billing-cancel">取消</button><button type="button" class="scan-billing-submit">带入开单页</button></div></div>';
+        page.appendChild(mask);
+        mask.querySelector('.scan-billing-cancel').onclick = function () { mask.remove(); };
+        mask.querySelector('.scan-billing-submit').onclick = function () { alert('演示：带入寄件人和收货人信息，跳转共用开单页面及数据'); mask.remove(); };
+      };
+      if (!remaining) { openChoice(); return; }
+      var confirmMask = document.createElement('div');
+      confirmMask.className = 'scan-billing-mask';
+      confirmMask.innerHTML = '<div class="scan-billing-dialog"><h3>确认转开单</h3><p class="scan-billing-copy">当前批次还有 <b>' + remaining + '</b> 件余件未加入，确认继续转开单？余件仍保留在待集包列表。</p><div class="scan-billing-actions"><button type="button" class="scan-billing-cancel">取消</button><button type="button" class="scan-billing-submit">继续转开单</button></div></div>';
+      page.appendChild(confirmMask);
+      confirmMask.querySelector('.scan-billing-cancel').onclick = function () { confirmMask.remove(); };
+      confirmMask.querySelector('.scan-billing-submit').onclick = function () { confirmMask.remove(); openChoice(); };
+    };
+  }, 3000);
+});
+</script>
+<style>
+#billed-list .billed-batch-card{padding:10px;margin:10px 0}
+#billed-list .billed-batch-card h3{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 7px;font-size:14px}
+#billed-list .billed-time{font-size:11px;font-weight:400;color:#6b7280;white-space:nowrap}
+#billed-list .billed-waybill-row{padding:7px 0}
+#billed-list .billed-waybill-row a{font-weight:600;text-decoration:underline}
+#billed-list .billed-goods-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}
+#billed-list .billed-goods-table th{padding:6px 5px;background:#eaf1f6;text-align:left;font-weight:600;white-space:nowrap}
+#billed-list .billed-goods-table td{padding:7px 5px;border-bottom:1px solid #eef0f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#billed-list .billed-goods-table th:nth-child(1),#billed-list .billed-goods-table td:nth-child(1){width:45%}
+#billed-list .billed-goods-table th:nth-child(2),#billed-list .billed-goods-table td:nth-child(2){width:33%}
+#billed-list .billed-goods-table th:nth-child(3),#billed-list .billed-goods-table td:nth-child(3),#billed-list .billed-goods-table th:nth-child(4),#billed-list .billed-goods-table td:nth-child(4){width:11%;text-align:right}
+#billed-list .billed-goods-table .remaining{color:#d93025;font-weight:600}
+#billed-list .billed-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+#billed-list .billed-actions button{min-width:0;padding:8px 3px;border:1px solid #d5dbe1;border-radius:5px;background:#fff7ed;color:#0b3275;font-size:12px;cursor:pointer}
+#billed-list .billed-actions .billed-add{background:#ff921f;border-color:#ff921f;color:#fff}
+#app > .grid > #billing-list{grid-column:1!important;grid-row:3!important;align-self:start!important}
+#app > .grid > #billed-list{grid-column:2!important;grid-row:3!important;align-self:start!important}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var app = document.getElementById('app');
+  var grid = app && app.querySelector('.grid');
+  var pending = document.getElementById('billing-list');
+  if (!grid || !pending || document.getElementById('billed-list')) return;
+  var page = document.createElement('div');
+  page.className = 'phone';
+  page.id = 'billed-list';
+  page.innerHTML = '<h2>已开单列表</h2><div class="receiver billed-batch-card"><h3><span>批次 HB26092906</span><span class="billed-time">开单时间 09-29 09:20</span></h3><div class="row billed-waybill-row"><span>集包运单号</span><a href="#logistics">YT123456789 ↗</a></div><table class="billed-goods-table"><thead><tr><th>收货人</th><th>库位</th><th>已扫</th><th>余</th></tr></thead><tbody><tr><td>王先生(VIP号9527)</td><td>洪合-H03-14</td><td>6</td><td class="remaining">1</td></tr><tr><td>李女士(VIP号9528)</td><td>洪合-H03-13</td><td>4</td><td>0</td></tr></tbody></table><div class="billed-actions"><button type="button" class="billed-query">查询运单</button><button type="button" class="billed-share">分享</button><button type="button" class="billed-add">加货</button></div></div>';
+  pending.insertAdjacentElement('afterend', page);
+  var workbenchRows = app.querySelectorAll('.phone:first-child .app-link');
+  workbenchRows.forEach(function (row) {
+    if (row.textContent.indexOf('已开单') !== -1) row.onclick = function () { page.scrollIntoView(); };
+  });
+  page.querySelector('.billed-query').onclick = function () {
+    alert('开发提示：携带集包运单号，跳转共用运单详情及物流轨迹页面。');
+  };
+  page.querySelector('.billed-add').onclick = function () {
+    alert('开发提示：携带原拼包批次号，跳转扫码集包页面继续加货。');
+  };
+  page.querySelector('.billed-share').onclick = function () {
+    var text = '您的集包运单号:YT123456789，集包详细信息请点击查询#小程序://云服卡航/关联件码详情?waybill=YT123456789';
+    function done() { alert('已复制小程序关联件码详情页面链接及分享文案:' + text); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function () { fallbackCopy(text); done(); });
+    } else {
+      fallbackCopy(text); done();
+    }
+  };
+  function fallbackCopy(text) {
+    var input = document.createElement('textarea');
+    input.value = text;
+    input.style.position = 'fixed';
+    input.style.opacity = '0';
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    input.remove();
+  }
+});
+</script>
+<script>
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    var page = document.querySelector('#app .scan-pack-final');
+    var button = page && page.querySelector('.pack-billing-button');
+    if (!page || !button) return;
+    button.onclick = function () {
+      if (page.querySelector('.scan-billing-mask')) return;
+      var remaining = Array.from(page.querySelectorAll('.scan-summary-table td.remaining')).reduce(function (total, cell) {
+        return total + (Number(cell.textContent.trim()) || 0);
+      }, 0);
+      var openChoice = function () {
+        var mask = document.createElement('div');
+        mask.className = 'scan-billing-mask';
+        mask.innerHTML = '<div class="scan-billing-dialog"><h3>集包转开单</h3><div class="row"><span>寄件人</span><span class="scan-billing-select-value">不选</span></div><div class="row"><span>收货人</span><span class="scan-billing-select-value">王先生（VIP号9527）</span></div><div class="scan-billing-dev-hint">开发提示：寄件人默认不选；收货人默认选择收货人1。正式运单仅带入一个寄件人和一个收货人，点击“不选”后由开单员自行填写。</div><div class="scan-billing-actions"><button type="button" class="scan-billing-cancel">取消</button><button type="button" class="scan-billing-submit">带入开单页</button></div></div>';
+        page.appendChild(mask);
+        mask.querySelector('.scan-billing-cancel').onclick = function () { mask.remove(); };
+        mask.querySelector('.scan-billing-submit').onclick = function () { alert('演示：带入寄件人和收货人信息，跳转共用开单页面及数据'); mask.remove(); };
+      };
+      if (!remaining) { openChoice(); return; }
+      var confirmMask = document.createElement('div');
+      confirmMask.className = 'scan-billing-mask';
+      confirmMask.innerHTML = '<div class="scan-billing-dialog"><h3>确认转开单</h3><p class="scan-billing-copy">当前批次还有 <b>' + remaining + '</b> 件余件未加入，确认继续转开单？余件仍保留在待集包列表。</p><div class="scan-billing-actions"><button type="button" class="scan-billing-cancel">取消</button><button type="button" class="scan-billing-submit">继续转开单</button></div></div>';
+      page.appendChild(confirmMask);
+      confirmMask.querySelector('.scan-billing-cancel').onclick = function () { confirmMask.remove(); };
+      confirmMask.querySelector('.scan-billing-submit').onclick = function () { confirmMask.remove(); openChoice(); };
+    };
+  }, 3000);
+});
+</script>
+<script>
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    var grid = document.querySelector('#app > .grid');
+    var pending = document.getElementById('billing-list');
+    var billed = document.getElementById('billed-list');
+    if (!grid || !pending || !billed) return;
+    if (billed.parentElement !== grid) pending.insertAdjacentElement('afterend', billed);
+  }, 0);
+});
+</script>
+<section id="mini" class="screen active"><div class="grid">
+<div class="phone"><h2>拼包下单页</h2>
+<div class="row"><span>拼包站 <i style="color:#d93025">*</i></span><select style="width:190px"><option>洪合拼包站</option><option>环北拼包站</option><option>四季青拼包站</option></select></div>
+<div class="row"><span>发货档口/厂家 <i style="color:#d93025">*</i></span><span><b>杭州某档口</b> <button type="button" class="address-book-button" onclick="var x=document.getElementById('contacts');x.style.display=x.style.display==='block'?'none':'block'">通讯录</button></span></div><div id="contacts" class="success" style="display:block">跳转共用网络订单页面及数据</div>
+<div class="field"><label>支付金额 <i style="color:#d93025">*</i></label><input value="200" /></div>
+<div id="receivers"><div class="receiver"><h3>收货人 1</h3><div class="field"><label>收货人 <i style="color:#d93025">*</i></label><select onchange="other(this,'other1')"><option>王先生</option><option>李女士</option><option value="other">其他</option></select></div><div id="other1" class="hidden"><div class="field"><label>收货人 <i style="color:#d93025">*</i></label><input placeholder="请输入收货人" /></div><div class="field"><label>电话 <i style="color:#d93025">*</i></label><input placeholder="请输入电话" /></div><div class="field"><label>详细地址 <i style="color:#d93025">*</i></label><input placeholder="请输入详细地址" /></div></div><div class="field"><label>内物件数(选填)</label><input value="3" /></div><div class="field"><label>外观照片(选填)</label><input type="file" /></div></div></div>
+<div class="order-actions"><div class="btn secondary" onclick="addReceiver()">+ 加收货人</div><div class="btn primary-action">确认信息并支付</div></div></div>
+<div class="phone"><h2>拼包下单记录</h2><div class="receiver"><h3 style="display:flex;justify-content:space-between;align-items:center">订单 HH20260929001 <span style="font-size:12px;font-weight:normal;color:#6b7280">2026-09-29 15:30</span></h3><div class="row"><span>拼包站</span><span>洪合拼包站</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>收货人1</span><span>王先生(VIP号9527)</span></div><div class="row"><span>收货人2</span><span>李女士(VIP号9528)</span></div><div class="row"><span>支付金额</span><b>¥200</b></div><div class="row"><span>支付状态</span><span>已支付</span></div><div class="row"><button class="btn secondary" style="flex:1">查看详情</button></div></div><div class="receiver"><h3 style="display:flex;justify-content:space-between;align-items:center">订单 HH20260929002 <span style="font-size:12px;font-weight:normal;color:#6b7280">2026-09-29 14:20</span></h3><div class="row"><span>拼包站</span><span>四季青拼包站</span></div><div class="row"><span>发货档口/厂家</span><span>义乌某厂家</span></div><div class="row"><span>收货人</span><span>赵先生</span></div><div class="row"><span>支付金额</span><b>¥160</b></div><div class="row"><span>支付状态</span><span>未支付</span></div><div class="row" style="gap:8px"><button class="btn secondary" style="flex:1">查看详情</button><button class="btn secondary" style="flex:1" onclick="this.parentNode.parentNode.remove()">取消订单</button><button class="btn" style="flex:1">立即支付</button></div></div></div>
+<div class="phone"><h2>拼包订单详情</h2><div class="row"><span>订单号</span><b>HH20260929001</b></div><div class="row"><span>拼包站</span><span>洪合拼包站</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>支付金额</span><b>¥200</b></div><div class="row"><span>支付状态</span><span>未支付</span></div><div class="receiver"><h3>收货人 1 · 王先生(VIP号9527)</h3><div class="row"><span>内物件数</span><span>3</span></div><div class="row"><span>件码</span><span>HH2609290001</span></div><div class="row"><span>库位</span><span>洪合-H03-12</span></div><div class="row"><span>拼包状态</span><span>待集包</span></div><div class="row"><span>集包运单号</span><a href="#logistics" style="color:#0f5f9a;text-decoration:underline">YT123456790 ↗</a></div><div class="row"><span>集包运单状态</span><span>运输中</span></div></div><div class="receiver"><h3>收货人 2 · 李女士(VIP号9528)</h3><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>件码</span><span>HH2609290002</span></div><div class="row"><span>库位</span><span>洪合-H03-13</span></div><div class="row"><span>拼包状态</span><span>已集包</span></div><div class="row"><span>集包运单号</span><a href="#logistics" style="color:#0f5f9a;text-decoration:underline">YT123456789 ↗</a></div><div class="row"><span>集包运单状态</span><span>已签收</span></div></div><div class="btn">立即支付</div></div>
+<div class="phone" style="display:none"><h2>拼包报表</h2><div class="row"><span>查询日期</span><span>2026-09-29</span></div><div class="row"><span>收货人</span><span>全部 / 王先生 / 李女士</span></div><div class="row"><span>已发件数</span><b>18</b></div><div class="row"><span>已拼包件数</span><b>12</b></div><div class="row"><span>整单运单</span><span>YT123456789</span></div><div class="btn">查看厂商/档口明细</div></div>
+<div class="phone"><h2>拼包进货报表</h2><div class="field"><label>查询日期</label><input value="最近7天" /></div><div class="steps"><span class="step active">未集包</span><span class="step">已集包</span></div><div class="receiver"><h3>未集包 · 按件码</h3><div class="row"><span>件码</span><span>HH2609290003</span></div><div class="row"><span>收货人</span><span>赵先生(VIP号9529)</span></div><div class="row"><span>库位</span><span>洪合-H03-14</span></div><div class="row"><span>内物件数</span><span>1</span></div><div class="row"><span>入站时间</span><span>09-29 11:10</span></div><div class="btn secondary">查看记录详情</div></div><div class="receiver"><h3>王先生(VIP号9527)</h3><div class="row"><span>集包运单号</span><a href="#logistics" style="color:#0f5f9a;text-decoration:underline">YT123456789 ↗</a></div><div class="row"><span>集包运单状态</span><span>已签收</span></div><div class="row"><span>件码 / 库位</span><span>HH2609290002 / 洪合-H03-13</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>入站时间</span><span>09-29 10:20</span></div><div class="row"><span>拼包时间</span><span>09-29 14:30</span></div><div class="btn secondary">查看记录详情</div></div></div><div class="phone" id="report-v2"><h2>拼包进货报表</h2><div class="field"><label>查询日期</label><input value="最近7天" /></div><div class="steps"><button class="step active" onclick="showReportV2(0)">未集包（2）</button><button class="step" onclick="showReportV2(1)">已集包（2）</button></div><div id="report-v2-pending"><div class="receiver"><h3>赵先生(VIP号9529)</h3><div class="row"><span>件码</span><span>HH2609290003</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>内物件数</span><span>1</span></div><div class="row"><span>下单时间</span><span>09-29 11:10</span></div></div><div class="receiver"><h3>李女士(VIP号9528)</h3><div class="row"><span>件码</span><span>HH2609290004</span></div><div class="row"><span>发货档口/厂家</span><span>义乌某厂家</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>下单时间</span><span>09-29 12:20</span></div></div></div><div id="report-v2-collected" class="hidden"><div class="receiver"><h3>王先生(VIP号9527)</h3><div class="row"><span>集包运单号</span><a href="#waybill-detail" onclick="return showWaybillDemo(this.textContent)" style="color:#0f5f9a;text-decoration:underline">YT123456789 ↗</a></div><div class="row"><span>件码数量</span><span>2</span></div><div class="btn secondary">查看关联件码详情</div><div class="row"><span>集包时间</span><span>09-29 10:20</span></div></div><div class="receiver"><h3>李女士(VIP号9528)</h3><div class="row"><span>集包运单号</span><a href="#waybill-detail" onclick="return showWaybillDemo(this.textContent)" style="color:#0f5f9a;text-decoration:underline">YT123456791 ↗</a></div><div class="row"><span>件码数量</span><span>2</span></div><div class="btn secondary">查看关联件码详情</div><div class="row"><span>集包时间</span><span>09-29 09:50</span></div></div></div></div><div class="phone" id="related-package-detail"><h2>关联件码详情</h2><div class="row"><span>集包运单号</span><a href="#waybill-detail" style="color:#0f5f9a;text-decoration:underline" onclick="return showWaybillDemo(this.textContent)">YT123456789 ↗</a></div><div class="row"><span>收货人</span><span>王先生(VIP号9527)</span></div><div class="row"><span>集包运单状态</span><span>已签收</span></div><div class="row"><span>集包时间</span><span>09-29 14:30</span></div><div class="receiver"><h3>关联件码 1</h3><div class="row"><span>件码</span><span>HH2609290002</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>下单时间</span><span>09-29 10:20</span></div></div><div class="receiver"><h3>关联件码 2</h3><div class="row"><span>件码</span><span>HH2609290005</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>下单时间</span><span>09-29 11:05</span></div></div></div></div><div class="phone mini-extra-menu"><div class="mini-topbar"></div><div class="mini-profile">13145722577</div><div class="mini-existing-grid"><div class="mini-feature"><div class="mini-feature-icon">▣</div><span>物流跟踪</span></div><div class="mini-feature"><div class="mini-feature-icon">▤</div><span>拉包记录</span></div><div class="mini-feature"><div class="mini-feature-icon">▥</div><span>拼包下单</span></div><div class="mini-feature"><div class="mini-feature-icon">▧</div><span>拼包下单记录</span></div><div class="mini-feature"><div class="mini-feature-icon">▦</div><span>拼包进货报表</span></div></div><div class="mini-bottom">我的</div></div></section>
+<section id="app" class="screen"><div class="grid">
+<div class="phone"><h2>拼包工作台</h2><div class="row"><span>查询条件</span><button class="inline-btn" onclick='toggle("workbench-site-query")'>按网点查询</button></div><div id="workbench-site-query" class="hidden success">跳转共用网点查询条件页面及数据</div><div class="row app-link" onclick="document.getElementById('order-list').scrollIntoView()">拼包下单记录<b class="tag">12件，3单</b></div><div class="row app-link" onclick="document.getElementById('pickup-list').scrollIntoView()">待揽收<b class="tag">8件，2单</b></div><div class="row app-link" onclick="document.getElementById('pack-list').scrollIntoView()">待集包<b class="tag">42件</b></div><div class="row app-link" onclick="document.getElementById('billing-list').scrollIntoView()">待开单<b class="tag">6件，2单</b></div><div class="row app-link">已开单<b class="tag">18件，4单</b></div><div class="workbench-actions"><div class="btn" onclick="document.getElementById('scan-result').scrollIntoView()">查询件码</div><div class="btn" onclick="alert('演示：打开新增件码页面')">新增件码</div><div class="btn" onclick="document.getElementById('pack-list').scrollIntoView()">扫描集包</div></div></div>
+<div class="phone"><h2>扫码集包</h2><div class="row"><span>批次</span><b>HB26092908</b></div><div class="check">☐ 不同收货人拼包（默认关闭）</div><div class="warn">语音提示：该件收货人与当前批次不同，已阻止加入。开启不同收货人拼包后可继续。</div><div class="row"><span>已扫未转拼包</span><b>12</b></div><div class="row"><span>剩余待扫</span><b>8</b></div><div class="btn">继续扫码</div></div>
+</div><div class="phone" id="pickup-list"><h2>待收款/待揽收列表</h2><div class="receiver"><h3 style="display:flex;justify-content:space-between;align-items:center"><span>订单 HH20260929001</span><span style="font-size:12px;font-weight:normal;color:#6b7280">2026-09-29 10:20</span></h3><div class="row"><span>发货人/电话</span><span>杭州某档口  13812349527 <a class="call-button" href="tel:13812349527">拨号</a></span></div><div class="row"><span>取货地址</span><span>杭州市上城区四季青某档口</span></div><div class="receiver pickup-recipient"><h3>收货人1</h3><div class="row"><span>收货人</span><span>王先生(VIP号9527)</span></div><div class="row"><span>件码</span><span>HH2609290001</span></div><div class="row"><span>内物件数</span><span>3</span></div><div class="row"><span>外观照片</span><span>已上传1张</span></div></div><div class="receiver pickup-recipient"><h3>收货人2</h3><div class="row"><span>收货人</span><span>李女士(VIP号9528)</span></div><div class="row"><span>件码</span><span>HH2609290002</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>外观照片</span><span>未上传</span></div></div><div class="btn secondary">打印件码</div></div><div class="receiver"><h3 style="display:flex;justify-content:space-between;align-items:center"><span>订单 HH20260929002</span><span style="font-size:12px;font-weight:normal;color:#6b7280">2026-09-29 11:05</span></h3><div class="row"><span>发货人/电话</span><span>义乌某厂家  13912349528 <a class="call-button" href="tel:13912349528">拨号</a></span></div><div class="row"><span>取货地址</span><span>义乌市稠城街道某厂家</span></div><div class="receiver pickup-recipient"><h3>收货人1</h3><div class="row"><span>收货人</span><span>赵先生(VIP号9529)</span></div><div class="row"><span>件码</span><span>HH2609290003</span></div><div class="row"><span>内物件数</span><span>1</span></div><div class="row"><span>外观照片</span><span>已上传2张</span></div></div><div class="receiver pickup-recipient"><h3>收货人2</h3><div class="row"><span>收货人</span><span>钱女士(VIP号9530)</span></div><div class="row"><span>件码</span><span>HH2609290004</span></div><div class="row"><span>内物件数</span><span>4</span></div><div class="row"><span>外观照片</span><span>未上传</span></div></div><div class="btn secondary">打印件码</div></div></div><div class="phone" id="pack-list"><h2>待集包列表</h2><div class="receiver pack-card"><h3 style="display:flex;justify-content:space-between;align-items:center"><span>王先生(VIP号9527)</span><span style="font-size:12px;font-weight:400;color:#6b7280">2026-09-29 11:05</span></h3><div class="row"><span>收货人库位</span><span>洪合-H03-14</span></div><div class="row"><span>待扫件数</span><span>12件</span></div><div class="pack-detail hidden"><div class="row"><span>件码</span><span>HH2609290001</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>内物件数</span><span>3</span></div><div class="row"><span>下单时间</span><span>09-29 11:05</span></div><div class="row"><span>外观照片</span><span>0张 查看</span></div><div class="row"><span>件码</span><span>HH2609290002</span></div><div class="row"><span>发货档口/厂家</span><span>义乌某厂家</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>外观照片</span><span>1张 查看</span></div></div><div class="btn">进入扫码集包</div><div class="btn secondary pack-detail-button">查看详情</div></div><div class="receiver pack-card"><h3 style="display:flex;justify-content:space-between;align-items:center"><span>李女士(VIP号9528)</span><span style="font-size:12px;font-weight:400;color:#6b7280">2026-09-29 10:20</span></h3><div class="row"><span>收货人库位</span><span>四季青-S02-08</span></div><div class="row"><span>待扫件数</span><span>8件</span></div><div class="pack-detail hidden"><div class="row"><span>件码</span><span>HH2609290003</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>内物件数</span><span>1</span></div><div class="row"><span>下单时间</span><span>09-29 10:20</span></div><div class="row"><span>外观照片</span><span>0张 查看</span></div><div class="row"><span>件码</span><span>HH2609290004</span></div><div class="row"><span>发货档口/厂家</span><span>义乌某厂家</span></div><div class="row"><span>内物件数</span><span>4</span></div><div class="row"><span>下单时间</span><span>09-29 10:20</span></div><div class="row"><span>外观照片</span><span>2张 查看</span></div></div><div class="btn">进入扫码集包</div><div class="btn secondary pack-detail-button">查看详情</div></div><div class="receiver pack-card"><h3 style="display:flex;justify-content:space-between;align-items:center"><span>陈先生</span><span style="font-size:12px;font-weight:400;color:#6b7280">2026-09-29 09:50</span></h3><div class="row"><span>收货人库位</span><span>其他</span></div><div class="row"><span>待扫件数</span><span>5件</span></div><div class="pack-detail hidden"><div class="row"><span>件码</span><span>HH2609290005</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>外观照片</span><span>0张 查看</span></div></div><div class="btn">进入扫码集包</div><div class="btn secondary pack-detail-button">查看详情</div></div></div><div class="phone" id="billing-list"><h2>待开单批次列表</h2><div class="receiver"><h3>批次 HB26092908</h3><div class="row"><span>收货人</span><span>王先生(VIP号9527)</span></div><div class="row"><span>件数</span><span>12</span></div><div class="btn">进入批次详情</div></div><div class="receiver"><h3>批次 HB26092909</h3><div class="row"><span>收货人</span><span>李女士(VIP号9528)</span></div><div class="row"><span>件数</span><span>8</span></div><div class="btn">进入批次详情</div></div></div><div class="phone" id="scan-result"><h2>拼包查询结果</h2><div class="row"><span>查询件码</span><b>HH2609290002</b></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>收货人</span><span>王先生(VIP号9527)</span></div><div class="row"><span>拼包状态</span><span>已集包</span></div><div class="row"><span>集包运单号</span><a href="#logistics">YT123456789 ↗</a></div></div></section>
+<script>function show(id,btn){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}function toggle(id){document.getElementById(id).classList.toggle('hidden')}function other(select,id){document.getElementById(id).classList.toggle('hidden',select.value!=='other')}function addReceiver(){const n=document.querySelectorAll('#receivers>.receiver').length+1;const otherId='other'+n;const box=document.createElement('div');box.className='receiver';box.innerHTML='<h3>收货人 '+n+'</h3><div class="field"><label>收货人 <i style="color:#d93025">*</i></label><select onchange="other(this,\''+otherId+'\')"><option>王先生</option><option>李女士</option><option value="other">其他</option></select></div><div id="'+otherId+'" class="hidden"><div class="field"><label>收货人 <i style="color:#d93025">*</i></label><input placeholder="请输入收货人" /></div><div class="field"><label>电话 <i style="color:#d93025">*</i></label><input placeholder="请输入电话" /></div><div class="field"><label>详细地址 <i style="color:#d93025">*</i></label><input placeholder="请输入详细地址" /></div></div><div class="field"><label>内物件数(选填)</label><input value="2" /></div><div class="field"><label>外观照片(选填)</label><input type="file" /></div>';document.getElementById('receivers').appendChild(box)}</script><script>document.querySelectorAll('#receivers select').forEach(function(select){if(select.options.length>=3){select.options[0].text='王先生(VIP号9527)';select.options[1].text='李女士(VIP号9528)'}})</script><script>const inboundReport=document.querySelector("#mini>.grid>.phone:nth-child(5)");if(inboundReport){const inboundCards=inboundReport.querySelectorAll(".receiver");const inboundTabs=inboundReport.querySelectorAll(".steps .step");function switchInbound(status){inboundCards.forEach((card,index)=>card.style.display=(status==="pending"?index===0:index===1)?"block":"none");inboundTabs[0].classList.toggle("active",status==="pending");inboundTabs[1].classList.toggle("active",status==="collected")}inboundTabs[0].onclick=()=>switchInbound("pending");inboundTabs[1].onclick=()=>switchInbound("collected");switchInbound("pending")}</script><script>const reportBox=document.querySelector("#mini>.grid>.phone:nth-child(5)");if(reportBox){const firstPending=reportBox.querySelector(".receiver");const collected=reportBox.querySelectorAll(".receiver")[1];const pending2=firstPending.cloneNode(true);pending2.querySelector("h3").textContent="未集包 · 按件码";pending2.querySelector(".row:nth-child(1) span:last-child").textContent="HH2609290004";pending2.querySelector(".row:nth-child(2) span:last-child").textContent="李女士(VIP号9528)";pending2.querySelector(".row:nth-child(3) span:last-child").textContent="洪合-H03-15";firstPending.parentNode.insertBefore(pending2,collected);const collected2=collected.cloneNode(true);collected2.querySelector("h3").textContent="李女士(VIP号9528)";collected2.querySelector(".row:nth-child(1) a").textContent="YT123456791 ↗";collected2.querySelector(".row:nth-child(3) span:last-child").textContent="HH2609290005 / 洪合-H03-16";collected.parentNode.appendChild(collected2);const tabs=reportBox.querySelectorAll(".steps .step");const cards=reportBox.querySelectorAll(".receiver");function toggleCards(mode){cards.forEach(card=>{const pending=card.querySelector("h3").textContent.indexOf("未集包")>=0;card.style.display=(mode==="pending"?pending:!pending)?"block":"none"});tabs[0].classList.toggle("active",mode==="pending");tabs[1].classList.toggle("active",mode==="collected")}tabs[0].onclick=()=>toggleCards("pending");tabs[1].onclick=()=>toggleCards("collected");toggleCards("pending")}</script><script>const inboundReportForFields=document.querySelector("#mini>.grid>.phone:nth-child(5)");if(inboundReportForFields){inboundReportForFields.querySelectorAll(".receiver").forEach(card=>{card.querySelectorAll(".row").forEach(row=>{const label=row.querySelector("span");if(label&&label.textContent.includes("件码 / 库位")){row.remove()}if(label&&label.textContent.includes("入站时间")){label.textContent="下单时间"}})})}</script><script>const stockReport=document.querySelector("#mini>.grid>.phone:nth-child(5)");if(stockReport){const stockTabs=stockReport.querySelectorAll(".steps .step");const stockCards=stockReport.querySelectorAll(".receiver");stockTabs[0].textContent="现有库存";stockCards[0].querySelector("h3").textContent="库存记录";stockCards[1].querySelector("h3").textContent="库存记录";function toggleStock(mode){stockCards.forEach((card,index)=>card.style.display=(mode==="stock"?index<2:index>=2)?"block":"none");stockTabs[0].classList.toggle("active",mode==="stock");stockTabs[1].classList.toggle("active",mode==="collected")}stockTabs[0].onclick=()=>toggleStock("stock");stockTabs[1].onclick=()=>toggleStock("collected");toggleStock("stock")}</script><script>const restoreInboundTab=document.querySelector("#mini>.grid>.phone:nth-child(5) .steps .step:first-child");if(restoreInboundTab){restoreInboundTab.textContent="未集包"}</script><script>const visibleReport=document.querySelector("#mini>.grid>.phone:nth-child(5)");if(visibleReport){const visibleTabs=visibleReport.querySelectorAll(".steps .step");const visibleCards=visibleReport.querySelectorAll(".receiver");visibleTabs[0].textContent="未集包（2）";visibleTabs[1].textContent="已集包（2）";visibleCards.forEach((card,index)=>card.style.display=index<2?"block":"none")}</script><script>const combinedReport=document.querySelector("#mini>.grid>.phone:nth-child(5)");if(combinedReport){const combinedTabs=combinedReport.querySelectorAll(".steps .step");const combinedCards=combinedReport.querySelectorAll(".receiver");combinedTabs[0].textContent="未集包（2）";combinedTabs[1].textContent="已集包（2）";combinedTabs.forEach(tab=>{tab.style.cursor="default";tab.onclick=null});combinedCards.forEach(card=>card.style.display="block")}</script><script>const reportBanner=document.querySelector("#mini>.grid>.phone:nth-child(5) .steps");if(reportBanner){const reportTabs=reportBanner.querySelectorAll(".step");reportTabs.forEach(tab=>{tab.onclick=function(){reportTabs.forEach(item=>item.classList.remove("active"));tab.classList.add("active")};tab.style.cursor="pointer"})}</script><script>const reportPage=Array.from(document.querySelectorAll("#mini>.grid>.phone")).find(phone=>phone.querySelector("h2")&&phone.querySelector("h2").textContent.includes("拼包进货报表"));if(reportPage){const reportTabs=reportPage.querySelectorAll(".steps .step");const reportCards=Array.from(reportPage.querySelectorAll(".receiver"));function setReportView(mode){reportCards.forEach((card,index)=>{card.style.display=(mode==="pending"?index<2:index>=2)?"block":"none"});reportTabs[0].classList.toggle("active",mode==="pending");reportTabs[1].classList.toggle("active",mode==="collected")}reportTabs[0].onclick=()=>setReportView("pending");reportTabs[1].onclick=()=>setReportView("collected");setReportView("pending")}</script><script>window.addEventListener("load",function(){const page=[...document.querySelectorAll(".phone")].find(x=>x.querySelector("h2")?.textContent.trim()==="拼包进货报表");if(!page)return;const tabs=page.querySelectorAll(".steps .step");const cards=[...page.querySelectorAll(".receiver")];const pending=cards.filter(x=>x.textContent.includes("HH2609290003")||x.textContent.includes("HH2609290004"));const collected=cards.filter(x=>x.textContent.includes("YT123456789")||x.textContent.includes("YT123456791"));function view(type){pending.forEach(x=>x.style.display=type==="pending"?"block":"none");collected.forEach(x=>x.style.display=type==="collected"?"block":"none");tabs[0].classList.toggle("active",type==="pending");tabs[1].classList.toggle("active",type==="collected")}tabs[0].onclick=function(){view("pending")};tabs[1].onclick=function(){view("collected")};view("pending")})</script><script>window.addEventListener('load',function(){const page=[...document.querySelectorAll('#mini .phone')].find(x=>x.querySelector('h2')?.textContent.trim()==='拼包进货报表');if(!page)return;const cards=[...page.querySelectorAll('.receiver')];const names=['赵先生(VIP号9529)','李女士(VIP号9528)','王先生(VIP号9527)','李女士(VIP号9528)'];const senders=['杭州某档口','义乌某厂家','杭州某档口','义乌某厂家'];cards.forEach((card,index)=>{const title=card.querySelector('h3');if(title)title.textContent=names[index]||'收货人';card.querySelectorAll('.row').forEach(row=>{const label=row.querySelector('span');if(label&&label.textContent.includes('库位'))row.remove();if(label&&label.textContent.includes('收货人')){label.textContent='发货档口/厂家';const value=row.querySelector('span:last-child');if(value)value.textContent=senders[index]||''}});if(![...card.querySelectorAll('.row span:first-child')].some(x=>x.textContent.includes('发货档口/厂家'))){const row=document.createElement('div');row.className='row';const label=document.createElement('span');label.textContent='发货档口/厂家';const value=document.createElement('span');value.textContent=senders[index]||'';row.append(label,value);card.insertBefore(row,card.querySelector('.row'))}})})</script><script>const oneCountReport=[...document.querySelectorAll('#mini .phone')].find(x=>x.querySelector('h2')?.textContent.trim()==='拼包进货报表');if(oneCountReport){const oneTabs=oneCountReport.querySelectorAll('.steps .step');if(oneTabs[0])oneTabs[0].textContent='未集包（1）';if(oneTabs[1])oneTabs[1].textContent='已集包（1）'}</script><script>const twoCountReport=[...document.querySelectorAll('#mini .phone')].find(x=>x.querySelector('h2')?.textContent.trim()==='拼包进货报表');if(twoCountReport){const twoTabs=twoCountReport.querySelectorAll('.steps .step');if(twoTabs[0])twoTabs[0].textContent='未集包（2）';if(twoTabs[1])twoTabs[1].textContent='已集包（2）'}</script><script>window.addEventListener('load',function(){const page=[...document.querySelectorAll('#mini .phone')].find(x=>x.querySelector('h2')?.textContent.trim()==='拼包进货报表');if(!page)return;let cards=[...page.querySelectorAll('.receiver')];if(cards.length===2){const pendingClone=cards[0].cloneNode(true);const collectedClone=cards[1].cloneNode(true);const pendingCode=pendingClone.querySelectorAll('.row span:last-child')[0];if(pendingCode)pendingCode.textContent='HH2609290004';const pendingReceiver=pendingClone.querySelectorAll('.row span:last-child')[1];if(pendingReceiver)pendingReceiver.textContent='李女士(VIP号9528)';const collectedWaybill=collectedClone.querySelector('.row a');if(collectedWaybill){collectedWaybill.textContent='YT123456791 ↗'}page.appendChild(pendingClone);page.appendChild(collectedClone);cards=[...page.querySelectorAll('.receiver')]}const tabs=page.querySelectorAll('.steps .step');tabs[0].textContent='未集包（2）';tabs[1].textContent='已集包（2）';function view(mode){cards.forEach((card,index)=>card.style.display=(mode==='pending'?index<2:index>=2)?'block':'none');tabs[0].classList.toggle('active',mode==='pending');tabs[1].classList.toggle('active',mode==='collected')}tabs[0].onclick=function(){view('pending')};tabs[1].onclick=function(){view('collected')};view('pending')})</script><script>(function(){window.addEventListener('load',function(){var page=Array.prototype.find.call(document.querySelectorAll('#mini .phone'),function(x){var h=x.querySelector('h2');return h&&h.textContent.trim()==='拼包进货报表'});if(!page)return;var cards=Array.prototype.slice.call(page.querySelectorAll('.receiver'));if(cards.length<4&&cards.length>=2){var pendingClone=cards[0].cloneNode(true);var collectedClone=cards[1].cloneNode(true);var pendingValues=pendingClone.querySelectorAll('.row span:last-child');if(pendingValues[0])pendingValues[0].textContent='HH2609290004';if(pendingValues[1])pendingValues[1].textContent='李女士(VIP号9528)';var collectedLink=collectedClone.querySelector('.row a');if(collectedLink)collectedLink.textContent='YT123456791 ↗';page.appendChild(pendingClone);page.appendChild(collectedClone);cards=Array.prototype.slice.call(page.querySelectorAll('.receiver'))}var tabs=page.querySelectorAll('.steps .step');if(tabs.length<2)return;tabs[0].textContent='未集包（2）';tabs[1].textContent='已集包（2）';function view(mode){cards.forEach(function(card,index){card.style.display=(mode==='pending'?index<2:index>=2)?'block':'none'});tabs[0].classList.toggle('active',mode==='pending');tabs[1].classList.toggle('active',mode==='collected')}tabs[0].onclick=function(){view('pending')};tabs[1].onclick=function(){view('collected')};view('pending')})})()</script><script>window.showReportV2=function(mode){var p=document.getElementById("report-v2-pending"),c=document.getElementById("report-v2-collected"),b=document.querySelectorAll("#report-v2 .step");p.classList.toggle("hidden",mode!==0);c.classList.toggle("hidden",mode!==1);b[0].classList.toggle("active",mode===0);b[1].classList.toggle("active",mode===1)}</script><script>(function(){var reports=document.querySelectorAll('#mini .phone');reports.forEach(function(box){var title=box.querySelector('h2');if(title&&title.textContent.trim()==='拼包进货报表'&&box.id!=='report-v2'){box.style.display='none'}})})()</script><script>window.showWaybillDemo=function(text){var no=text.replace("↗","").trim();alert("演示：即将跳转运单详情页\n运单号："+no+"\n可查看物流轨迹、当前状态和节点时间");return false}</script><script>(function(){var report=document.getElementById("report-v2");if(report){var collected=document.getElementById("report-v2-collected");if(collected){collected.querySelectorAll(".receiver").forEach(function(card){var button=card.querySelector(".btn.secondary");if(button)card.appendChild(button)})}}})()</script><script>(function(){var detail=document.getElementById("related-package-detail");if(!detail)return;var cards=detail.querySelectorAll(".receiver");var codes=["HH2609290002","HH2609290005"];var senders=["杭州某档口","杭州某档口"];cards.forEach(function(card,index){var title=card.querySelector("h3");if(title)title.textContent="件码 "+codes[index];var row=document.createElement("div");row.className="row";row.innerHTML="<span>发货档口/厂家</span><span>"+senders[index]+"</span>";card.insertBefore(row,card.querySelector(".row"))})})()</script><script>window.showWaybillDemo=function(text){var link=event&&event.currentTarget?event.currentTarget:null;var host=link?link.closest(".phone")||link.closest(".receiver"):document.body;var tip=host.querySelector(".waybill-demo-tip");if(!tip){tip=document.createElement("div");tip.className="waybill-demo-tip success";host.appendChild(tip)}tip.textContent="跳转共用运单详情页面及数据";return false}</script><script>(function(){var detail=Array.prototype.find.call(document.querySelectorAll("#mini .phone"),function(x){var h=x.querySelector("h2");return h&&h.textContent.trim()==="拼包订单详情"});if(!detail)return;detail.querySelectorAll("a").forEach(function(link){link.onclick=function(e){e.preventDefault();var tip=detail.querySelector(".waybill-demo-tip");if(!tip){tip=document.createElement("div");tip.className="waybill-demo-tip success";detail.appendChild(tip)}tip.textContent="跳转共用运单轨迹页面及数据";return false}})})()</script><script>
+(function(){
+window.addEventListener("load", function(){
+  var selects=document.querySelectorAll("#receivers select");
+  if(!selects.length)return;
+  var mask=document.createElement("div");
+  mask.className="receiver-modal-mask hidden";
+  mask.innerHTML="<div class=\"receiver-modal\"><h3>选择收货人</h3><input class=\"receiver-filter\" placeholder=\"筛选收货人/VIP号\" /><div class=\"receiver-option\" data-value=\"王先生\">王先生(VIP号9527)</div><div class=\"receiver-option\" data-value=\"李女士\">李女士(VIP号9528)</div><div class=\"receiver-option\" data-value=\"other\">其他</div><div class=\"btn secondary\">取消</div></div>";
+  document.querySelector("#mini .phone").appendChild(mask);
+  var activeSelect=null;
+  selects.forEach(function(select){
+    var picker=document.createElement("button");
+    picker.type="button"; picker.className="receiver-picker"; picker.textContent=select.options[select.selectedIndex].text;
+    select.style.display="none"; select.parentNode.insertBefore(picker,select);
+    picker.onclick=function(){activeSelect=select;mask.classList.remove("hidden")};
+  });
+  mask.addEventListener("click",function(e){
+    var option=e.target.closest(".receiver-option");
+    if(option&&activeSelect){activeSelect.value=option.dataset.value;activeSelect.dispatchEvent(new Event("change"));var picker=activeSelect.previousElementSibling;picker.textContent=option.textContent;mask.classList.add("hidden")}
+    if(e.target===mask||e.target.classList.contains("btn"))mask.classList.add("hidden");
+  });
+});
+})();
+</script><script>
+(function(){
+window.addEventListener("load",function(){
+  var select=document.querySelector("#receivers select");
+  if(!select)return;
+  var saved=localStorage.getItem("lastReceiver");
+  var value=saved||select.value||"王先生";
+  select.value=value;
+  var picker=select.previousElementSibling;
+  if(picker&&select.options[select.selectedIndex])picker.textContent=select.options[select.selectedIndex].text;
+  var tip=document.createElement("div");
+  tip.className="success";
+  tip.textContent="已保留上次下单收货人";
+  select.closest(".receiver").insertBefore(tip,select.closest(".receiver").querySelector(".field"));
+  select.addEventListener("change",function(){localStorage.setItem("lastReceiver",select.value);tip.textContent="已记住本次收货人，下次下单将默认带出"});
+});
+})();
+</script><script>(function(){var input=document.querySelector(".receiver-filter");if(input){input.addEventListener("input",function(){var q=input.value.toLowerCase();document.querySelectorAll(".receiver-option").forEach(function(item){item.style.display=item.textContent.toLowerCase().includes(q)?"block":"none"})})}})()</script><script>(function(){document.querySelectorAll("#receivers .field").forEach(function(field){var label=field.querySelector("label");if(label&&label.textContent.includes("内物件数"))field.classList.add("field-inline")})})()</script><script>(function(){document.querySelectorAll("#mini>.grid>.phone:first-child .field").forEach(function(field){var label=field.querySelector("label");if(label&&label.textContent.includes("支付金额"))field.classList.add("field-inline")})})()</script><script>(function(){document.querySelectorAll("#mini>.grid>.phone:first-child .receiver-picker").forEach(function(picker){if(!picker.textContent.includes("›"))picker.textContent=picker.textContent+"  ›"})})()</script><script>(function(){var receivers=document.getElementById("receivers");if(!receivers)return;function sync(){receivers.querySelectorAll(".receiver .field").forEach(function(field){var label=field.querySelector("label");if(label&&label.textContent.includes("内物件数"))field.classList.add("field-inline")})}sync();new MutationObserver(sync).observe(receivers,{childList:true,subtree:true})})()</script><script>(function(){var box=document.getElementById("receivers");if(!box)return;function sync(card){if(card.dataset.labelsSynced)return;card.querySelectorAll("label").forEach(function(label){var text=label.textContent.trim();if(text==="收货人")label.innerHTML="收货人 <i style=\"color:#d93025\">*</i>";if(text==="内物件数")label.textContent="内物件数(选填)";if(text==="外观照片")label.textContent="外观照片(选填)"});card.dataset.labelsSynced="1"}box.querySelectorAll(".receiver").forEach(sync);new MutationObserver(function(list){list.forEach(function(change){change.addedNodes.forEach(function(node){if(node.nodeType===1&&node.classList.contains("receiver"))sync(node)})})}).observe(box,{childList:true})})()</script><script>(function(){document.querySelectorAll("#mini>.grid>.phone:first-child .receiver-picker").forEach(function(p){p.textContent=p.textContent.replace(/\s*›\s*$/,"")})})()</script><script>
+(function(){
+window.addEventListener("load",function(){
+  var receivers=document.getElementById("receivers");
+  var mask=document.querySelector(".receiver-modal-mask");
+  if(!receivers||!mask)return;
+  var active=null;
+  function enhance(){
+    receivers.querySelectorAll("select").forEach(function(select){
+      if(select.dataset.pickerReady||select.style.display==="none"||(select.previousElementSibling&&select.previousElementSibling.classList.contains("receiver-picker")))return;
+      select.options[0].text="王先生(VIP号9527)";
+      select.options[1].text="李女士(VIP号9528)";
+      var picker=document.createElement("button");
+      picker.type="button"; picker.className="receiver-picker";
+      picker.textContent=select.options[select.selectedIndex].text;
+      select.style.display="none"; select.dataset.pickerReady="1";
+      select.parentNode.insertBefore(picker,select);
+      picker.onclick=function(){active={select:select,picker:picker};mask.classList.remove("hidden")};
+    });
+  }
+  enhance();
+  new MutationObserver(enhance).observe(receivers,{childList:true,subtree:true});
+  mask.addEventListener("click",function(e){
+    var option=e.target.closest(".receiver-option");
+    if(option&&active){
+      active.select.value=option.dataset.value;
+      active.picker.textContent=option.textContent;
+      active.select.dispatchEvent(new Event("change"));
+      mask.classList.add("hidden");
+    }
+  });
+});
+})();
+</script><script>(function(){var page=document.querySelector("#mini>.grid>.phone:first-child");if(!page)return;var site=page.querySelector("select"),sender=page.querySelector(".row:nth-of-type(2)>span:nth-child(2)"),receiver=page.querySelector("#receivers .receiver-picker");if(site){var saved=localStorage.getItem("pinbao.site");if(saved&&[...site.options].some(function(o){return o.text===saved}))site.value=saved;site.addEventListener("change",function(){localStorage.setItem("pinbao.site",site.options[site.selectedIndex].text)})}if(sender){var savedSender=localStorage.getItem("pinbao.sender");if(savedSender)sender.textContent=savedSender;localStorage.setItem("pinbao.sender",sender.textContent)}if(receiver){var savedReceiver=localStorage.getItem("pinbao.receiver");if(savedReceiver)receiver.textContent=savedReceiver;receiver.addEventListener("click",function(){setTimeout(function(){var chosen=document.querySelector(".receiver-option.selected");if(chosen)localStorage.setItem("pinbao.receiver",chosen.textContent.trim())},0)})}})()</script><script>(function(){var maskEnabled=true;function mask(name){var chars=Array.from(name);if(chars.length>=3)return chars[0]+'*'.repeat(chars.length-2)+chars[chars.length-1];if(chars.length===2)return chars[0]+'*'+chars[1];return '**'+(chars[0]||'')}var phones=Array.prototype.slice.call(document.querySelectorAll('#mini>.grid>.phone')).slice(0,3);phones.forEach(function(phone){var walker=document.createTreeWalker(phone,NodeFilter.SHOW_TEXT);var nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(function(node){if(maskEnabled)node.nodeValue=node.nodeValue.replace(/王先生|李女士|赵先生|王女士/g,function(value){return mask(value)})})})})()</script><script>(function(){function mask(name){var chars=Array.from(name);if(chars.length>=3)return chars[0]+'*'.repeat(chars.length-2)+chars[chars.length-1];if(chars.length===2)return chars[0]+'*'+chars[1];return '**'+(chars[0]||'')}window.addEventListener('load',function(){var modal=document.querySelector('.receiver-modal');if(!modal)return;var input=modal.querySelector('.receiver-filter');var options=modal.querySelectorAll('.receiver-option');options.forEach(function(item){var raw=item.getAttribute('data-value')||'';if(raw==='other')return;var vip=(item.textContent.match(/VIP号\\d+/)||[''])[0];item.dataset.search=(raw+' '+vip).toLowerCase();item.dataset.display=mask(raw)+(vip?'('+vip+')':'');item.textContent=item.dataset.display});if(input)input.addEventListener('input',function(){var q=input.value.toLowerCase().trim();options.forEach(function(item){item.style.display=(item.dataset.search||item.textContent.toLowerCase()).includes(q)?'block':'none'})})})})()</script><script>(function(){function mask(name){var chars=Array.from(name);if(chars.length>=3)return chars[0]+'*'.repeat(chars.length-2)+chars[chars.length-1];if(chars.length===2)return chars[0]+'*'+chars[1];return '**'+(chars[0]||'')}function sync(){var modal=document.querySelector('.receiver-modal');if(!modal)return;var vipMap={'王先生':'VIP号9527','李女士':'VIP号9528','赵先生':'VIP号9529'};modal.querySelectorAll('.receiver-option').forEach(function(item){var raw=item.getAttribute('data-value')||'';if(raw==='other')return;var vip=vipMap[raw]||((item.textContent.match(/VIP号\\d+/)||[''])[0]);item.dataset.search=(raw+' '+vip).toLowerCase();item.dataset.display=mask(raw)+'('+vip+')';item.textContent=item.dataset.display});var input=modal.querySelector('.receiver-filter');if(input&&!input.dataset.rawSearchReady){input.dataset.rawSearchReady='1';input.addEventListener('input',function(){var q=input.value.toLowerCase().trim();modal.querySelectorAll('.receiver-option').forEach(function(item){item.style.display=(item.dataset.search||'').includes(q)?'block':'none'})})}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync);else sync();window.addEventListener('load',function(){setTimeout(sync,0)})})()</script><script>window.addEventListener("load",function(){var grid=document.querySelector("#mini>.grid"),menu=document.querySelector(".mini-extra-menu");if(grid&&menu&&menu.parentNode!==grid)grid.appendChild(menu)})</script><script>(function(){function bind(){var page=document.querySelector('#mini>.grid>.phone:first-child');if(!page)return;var button=Array.prototype.find.call(page.querySelectorAll('button'),function(x){return x.textContent.trim()==='通讯录'});var tip=page.querySelector('#contacts');if(!button||!tip)return;button.onclick=function(e){e.preventDefault();tip.style.display=tip.style.display==='block'?'none':'block'};button.dataset.bound='1'}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();window.addEventListener('load',bind)})()</script><script>window.addEventListener("load",function(){var grid=document.querySelector("#app>.grid"),workbench=grid&&grid.querySelector(".phone");if(!grid||!workbench)return;["pickup-list","pack-list","billing-list","scan-result"].forEach(function(id){var page=document.getElementById(id);if(page)grid.insertBefore(page,workbench.nextElementSibling)})})</script><script>window.addEventListener("load",function(){document.querySelectorAll("#pickup-list .pickup-recipient").forEach(function(card){var button=document.createElement("div");button.className="btn secondary pickup-expand";button.textContent="查看件码/件数/照片";card.appendChild(button);button.onclick=function(){var expanded=card.classList.toggle("is-expanded");button.textContent=expanded?"收起件码/件数/照片":"查看件码/件数/照片"}})})</script><script>window.addEventListener("load",function(){document.querySelectorAll("#pickup-list>.receiver").forEach(function(order){order.querySelectorAll(":scope>.pickup-recipient").forEach(function(card){var title=card.querySelector("h3"),row=card.querySelector(".row"),value=row&&row.querySelector("span:last-child");if(title&&row&&value){title.innerHTML="<span>"+title.textContent+"</span><span>"+value.textContent+"</span>";row.remove()}});order.querySelectorAll(":scope>.pickup-recipient .pickup-expand").forEach(function(x){x.remove()});var btn=document.createElement("div");btn.className="btn secondary pickup-order-detail";btn.textContent="查看详情";order.appendChild(btn);btn.onclick=function(){var expanded=order.classList.toggle("pickup-expanded");btn.textContent=expanded?"收起详情":"查看详情"}})})</script><script>window.addEventListener("load",function(){document.querySelectorAll("#pickup-list .pickup-recipient .row").forEach(function(row){var label=row.querySelector("span:first-child"),value=row.querySelector("span:last-child");if(label&&value&&label.textContent.trim()==="外观照片"){value.innerHTML="<button type=\"button\" class=\"btn secondary photo-view-button\">查看照片</button>";value.querySelector("button").onclick=function(){alert("演示：打开外观照片查看页面及数据")}}})})</script><script>window.addEventListener("load",function(){document.querySelectorAll("#pickup-list .pickup-recipient .row").forEach(function(row){var label=row.querySelector("span:first-child");if(label&&label.textContent.trim()==="外观照片"){var value=row.querySelector("span:last-child");value.innerHTML="0张 <span class=\"photo-view\">查看</span>";value.querySelector(".photo-view").onclick=function(){alert("演示：查看外观照片")}}})})</script><script>window.addEventListener("load",function(){document.querySelectorAll("#pickup-list>.receiver").forEach(function(order){if(order.querySelector(".pickup-action"))return;var button=document.createElement("div");button.className="btn pickup-action";button.textContent="确认揽收";order.appendChild(button);button.onclick=function(){button.textContent="已揽收";button.classList.add("secondary");button.classList.remove("pickup-action");var tip=order.querySelector(".pickup-status-tip");if(!tip){tip=document.createElement("div");tip.className="success pickup-status-tip";order.appendChild(tip)}tip.textContent="已完成揽收操作"}})})</script><script>window.addEventListener("load",function(){document.querySelectorAll("#pack-list .pack-detail-button").forEach(function(button){button.onclick=function(){var detail=button.parentNode.querySelector(".pack-detail");var expanded=!detail.classList.toggle("hidden");button.textContent=expanded?"收起详情":"查看详情"}})})</script><script>window.addEventListener("load",function(){document.querySelectorAll("#pack-list .pack-detail").forEach(function(detail){var rows=Array.from(detail.children).filter(function(x){return x.classList&&x.classList.contains("row")});for(var i=0;i<rows.length;i+=4){var item=document.createElement("div");item.className="package-detail-item";rows.slice(i,i+4).forEach(function(row){item.appendChild(row)});detail.appendChild(item)}})})</script><script>window.addEventListener("load",function(){document.querySelectorAll("#pack-list .package-detail-item .row").forEach(function(row){var label=row.querySelector("span:first-child"),value=row.querySelector("span:last-child");if(label&&value&&label.textContent.trim()==="外观照片"&&!value.querySelector(".photo-view")){var text=value.textContent.trim().replace(/查看/g,"").trim();value.innerHTML=text+" <span class=\"photo-view\">查看</span>";value.querySelector(".photo-view").onclick=function(){alert("演示：查看外观照片")}}})})</script><script>window.addEventListener("load",function(){document.querySelectorAll("#pack-list>.pack-card").forEach(function(card){card.querySelectorAll(":scope>.row").forEach(function(row){if(row.querySelector("span:first-child")?.textContent.trim()==="下单时间")row.remove()});card.querySelectorAll(".package-detail-item").forEach(function(item){if(item.querySelector(".pack-order-time"))return;var code=item.querySelector(".row span:last-child")?.textContent.trim();var time=code==="HH2609290001"||code==="HH2609290002"?"09-29 11:05":code==="HH2609290003"||code==="HH2609290004"?"09-29 10:20":"09-29 09:50";var row=document.createElement("div");row.className="row pack-order-time";row.innerHTML="<span>下单时间</span><span>"+time+"</span>";item.appendChild(row)})})})</script><script>
+window.addEventListener("load",function(){
+  var page=document.getElementById("pack-list");
+  if(!page)return;
+  page.innerHTML=`<h2>待集包列表</h2>
+  <div class="receiver pack-card"><h3><span>王先生(VIP号9527)</span><span class="pack-time">2026-09-29 11:05</span></h3><div class="row"><span>收货人库位</span><span>洪合-H03-14</span></div><div class="row"><span>待扫件数</span><span>12件</span></div><div class="pack-detail hidden"><div class="package-detail-item"><div class="row"><span>件码</span><span>HH2609290001</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>内物件数</span><span>3</span></div><div class="row"><span>下单时间</span><span>09-29 11:05</span></div><div class="row"><span>外观照片</span><span>0张 <button class="photo-view">查看</button></span></div></div><div class="package-detail-item"><div class="row"><span>件码</span><span>HH2609290002</span></div><div class="row"><span>发货档口/厂家</span><span>义乌某厂家</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>下单时间</span><span>09-29 11:05</span></div><div class="row"><span>外观照片</span><span>1张 <button class="photo-view">查看</button></span></div></div></div><div class="btn">进入扫码集包</div><div class="btn secondary pack-detail-button">查看详情</div></div>
+  <div class="receiver pack-card"><h3><span>李女士(VIP号9528)</span><span class="pack-time">2026-09-29 10:20</span></h3><div class="row"><span>收货人库位</span><span>四季青-S02-08</span></div><div class="row"><span>待扫件数</span><span>8件</span></div><div class="pack-detail hidden"><div class="package-detail-item"><div class="row"><span>件码</span><span>HH2609290003</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>内物件数</span><span>1</span></div><div class="row"><span>下单时间</span><span>09-29 10:20</span></div><div class="row"><span>外观照片</span><span>0张 <button class="photo-view">查看</button></span></div></div><div class="package-detail-item"><div class="row"><span>件码</span><span>HH2609290004</span></div><div class="row"><span>发货档口/厂家</span><span>义乌某厂家</span></div><div class="row"><span>内物件数</span><span>4</span></div><div class="row"><span>下单时间</span><span>09-29 10:20</span></div><div class="row"><span>外观照片</span><span>2张 <button class="photo-view">查看</button></span></div></div></div><div class="btn">进入扫码集包</div><div class="btn secondary pack-detail-button">查看详情</div></div>
+  <div class="receiver pack-card"><h3><span>陈先生</span><span class="pack-time">2026-09-29 09:50</span></h3><div class="row"><span>收货人库位</span><span>其他</span></div><div class="row"><span>待扫件数</span><span>5件</span></div><div class="pack-detail hidden"><div class="package-detail-item"><div class="row"><span>件码</span><span>HH2609290005</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>下单时间</span><span>09-29 09:50</span></div><div class="row"><span>外观照片</span><span>0张 <button class="photo-view">查看</button></span></div></div></div><div class="btn">进入扫码集包</div><div class="btn secondary pack-detail-button">查看详情</div></div>`;
+  page.querySelectorAll(".pack-detail-button").forEach(function(button){button.onclick=function(){var detail=button.parentNode.querySelector(".pack-detail");var open=!detail.classList.toggle("hidden");button.textContent=open?"收起详情":"查看详情"}});
+  page.querySelectorAll(".photo-view").forEach(function(button){button.onclick=function(){alert("演示：查看外观照片")}});
+});
+</script><script>
+(function(){
+  function renderScanPack(){
+    var page=Array.from(document.querySelectorAll('#app .phone')).find(function(item){var h=item.querySelector('h2');return h&&h.textContent.trim()==='扫码集包';});
+    if(!page||page.dataset.scanPackFinal==='1')return;
+    page.dataset.scanPackFinal='1';
+    page.innerHTML='<h2 style="display:flex;justify-content:space-between;align-items:center">扫码集包 <button class="pack-billing-button" type="button">转开单</button></h2><div class="row"><span>批次</span><b>HB26092908</b><button class="camera-scan-button" type="button">相机扫描</button></div><div class="check pack-option-group"><label><input type="checkbox" checked> 按收货人</label><label><input type="checkbox"> 按库位</label><span class="muted">（默认勾选按收货人）</span></div><div class="scan-section-title">收货人信息 <button class="remaining-query-button" type="button">查询余件</button></div><div class="scan-receiver-context"><div class="row scan-context-header"><span>收货人</span><span>库位</span><span>已扫</span><span>余</span></div><div class="row scan-context-row"><span>王先生(VIP号9527)</span><span>洪合-H03-14</span><span>1</span><span class="remaining">5</span></div><div class="row scan-context-row"><span>李女士(VIP号9528)</span><span>洪合-H03-13</span><span>1</span><span class="remaining">3</span></div></div><div class="scan-section-title">已扫描</div><div class="scanned-code-list"><div class="receiver"><h3 class="scanned-code-header"><span>HH2609290002</span><span>李女士(VIP号9528)</span><button class="remove-scanned-code" type="button">剔除</button></h3></div><div class="receiver"><h3 class="scanned-code-header"><span>HH2609290001</span><span>王先生(VIP号9527)</span><button class="remove-scanned-code" type="button">剔除</button></h3></div></div>';
+    page.querySelector('.pack-billing-button').onclick=function(){alert('演示：进入集包转开单页面');};
+    page.querySelector('.camera-scan-button').onclick=function(){alert('演示：调用手机相机扫描件码');};
+    page.querySelector('.remaining-query-button').onclick=function(){alert('演示：打开余件明细，可按件码查询');};
+    page.querySelectorAll('.remove-scanned-code').forEach(function(btn){btn.onclick=function(){btn.closest('.receiver').remove();};});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderScanPack);else renderScanPack();
+})();
+</script></body></html>
+<script>
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    var page = Array.from(document.querySelectorAll('#app .phone')).find(function (item) {
+      var h = item.querySelector('h2'); return h && h.textContent.trim() === '扫码集包';
+    });
+    if (!page || page.dataset.finalScanRender) return;
+    page.dataset.finalScanRender = '1';
+    page.innerHTML = '<h2 style="display:flex;justify-content:space-between;align-items:center">扫码集包 <button class="pack-billing-button" type="button">转开单</button></h2><div class="row"><span>批次</span><b>HB26092908</b><button class="camera-scan-button" type="button">相机扫描</button></div><div class="check pack-option-group"><label><input type="checkbox" checked> 按收货人</label><label><input type="checkbox"> 按库位</label><span class="muted">（默认勾选按收货人）</span></div><div class="scan-section-title">收货人信息 <button class="remaining-query-button" type="button">查询余件</button></div><div class="scan-receiver-context"><div class="row scan-context-header"><span>收货人</span><span>库位</span><span>已扫</span><span>余</span></div><div class="row scan-context-row"><span>王先生(VIP号9527)</span><span>洪合-H03-14</span><span>1</span><span class="remaining">5</span></div><div class="row scan-context-row"><span>李女士(VIP号9528)</span><span>洪合-H03-13</span><span>1</span><span class="remaining">3</span></div></div><div class="scan-section-title">已扫描</div><div class="scanned-code-list"><div class="receiver"><h3 class="scanned-code-header"><span>HH2609290002</span><span>李女士(VIP号9528)</span><button class="remove-scanned-code">剔除</button></h3></div><div class="receiver"><h3 class="scanned-code-header"><span>HH2609290001</span><span>王先生(VIP号9527)</span><button class="remove-scanned-code">剔除</button></h3></div></div>';
+    page.querySelector('.pack-billing-button').onclick = function(){ alert('演示：进入集包转开单页面'); };
+    page.querySelector('.camera-scan-button').onclick = function(){ alert('演示：调用手机相机扫描件码'); };
+    page.querySelectorAll('.remove-scanned-code').forEach(function(button){ button.onclick=function(){ button.closest('.receiver').remove(); }; });
+    page.querySelector('.remaining-query-button').onclick = function(){ alert('演示：打开余件明细，可按件码查询'); };
+  }, 0);
+});
+</script>
+<script>
+(function(){
+  var page=Array.from(document.querySelectorAll('#app .phone')).find(function(item){var h=item.querySelector('h2');return h&&h.textContent.trim()==='扫码集包';});
+  setTimeout(function(){
+    var finalPage=Array.from(document.querySelectorAll('#app .phone')).find(function(item){var h=item.querySelector('h2');return h&&h.textContent.trim()==='扫码集包';});
+    if(finalPage)finalPage.dataset.scanPackFinal='1';
+  },0);
+})();
+</script>
+<style>
+#app .phone.scan-pack-final{position:relative!important;overflow:hidden!important}
+.scan-billing-mask{position:absolute!important;inset:0!important;z-index:10001!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;background:rgba(0,0,0,.42)!important}
+.scan-billing-dialog{width:100%!important;box-sizing:border-box!important;padding:16px!important;border-radius:14px 14px 0 0!important;background:#fff!important;box-shadow:0 -4px 18px rgba(0,0,0,.18)!important}
+.scan-billing-dialog h3{margin:0 0 10px!important;font-size:17px!important}
+.scan-billing-dialog .row{display:flex!important;justify-content:space-between!important;align-items:center!important;padding:9px 0!important;border-bottom:1px solid #eef0f2!important}
+.scan-billing-select-value{position:relative!important;min-width:168px!important;padding-right:20px!important;box-sizing:border-box!important;text-align:right!important;cursor:pointer!important}
+.scan-billing-select-value::after{content:"▼"!important;position:absolute!important;right:2px!important;top:50%!important;transform:translateY(-50%)!important;color:#6b7280!important;font-size:10px!important;line-height:1!important}
+.scan-billing-dev-hint{margin:10px 0!important;padding:8px!important;background:#e8f7ed!important;color:#177245!important;border-radius:5px!important;font-size:12px!important;line-height:1.5!important}
+.scan-billing-actions{display:flex!important;gap:8px!important;margin-top:12px!important}
+.scan-billing-actions button{flex:1!important;padding:9px!important;border:1px solid #cfd6dd!important;border-radius:4px!important;background:#fff7ed!important;color:#0b3275!important;cursor:pointer!important}
+.scan-billing-actions .scan-billing-submit{background:#ff921f!important;border-color:#ff921f!important;color:#fff!important}
+</style>
+<script>
+(function(){
+  function bindScanBilling(){
+    var page=document.querySelector('#app .phone.scan-pack-final')||Array.from(document.querySelectorAll('#app .phone')).find(function(item){var h=item.querySelector('h2');return h&&h.textContent.trim()==='扫码集包';});
+    if(!page)return;
+    page.classList.add('scan-pack-final');
+    var standalone=document.getElementById('batch-detail');
+    if(standalone)standalone.style.display='none';
+    var photo=page.querySelector('.pack-photo-field');
+    if(photo)photo.remove();
+    var button=page.querySelector('.pack-billing-button');
+    if(!button){
+      var title=page.querySelector('h2');
+      if(title){button=document.createElement('button');button.type='button';button.className='pack-billing-button';button.textContent='转开单';title.appendChild(button);}
+    }
+    if(!button||button.dataset.billingBound==='1')return;
+    button.dataset.billingBound='1';
+    button.onclick=function(){
+      if(page.querySelector('.scan-billing-mask'))return;
+      var mask=document.createElement('div');mask.className='scan-billing-mask';
+      mask.innerHTML='<div class="scan-billing-dialog"><h3>集包转开单</h3><div class="row"><span>寄件人</span><span class="scan-billing-select-value">不选</span></div><div class="row"><span>收货人</span><span class="scan-billing-select-value">王先生（VIP号9527）</span></div><div class="scan-billing-dev-hint">开发提示：寄件人默认不选；收货人默认选择收货人1。正式运单仅带入一个寄件人和一个收货人，点击“不选”后由开单员自行填写。</div><div class="scan-billing-actions"><button type="button" class="scan-billing-cancel">取消</button><button type="button" class="scan-billing-submit">带入开单页</button></div></div>';
+      page.appendChild(mask);
+      mask.querySelector('.scan-billing-cancel').onclick=function(){mask.remove();};
+      mask.querySelector('.scan-billing-submit').onclick=function(){alert('演示：带入寄件人和收货人信息，跳转共用开单页面及数据');mask.remove();};
+    };
+  }
+  bindScanBilling();
+  setTimeout(bindScanBilling,0);
+  setTimeout(bindScanBilling,1300);
+})();
+</script>
+<style>
+#employee-order-list .order-payment-banner{display:flex!important;align-items:center!important;gap:6px!important;margin:10px 0!important}
+#employee-order-list .order-payment-banner button{border:1px solid #cfd6dd!important;background:#fff!important;color:#6b7280!important;padding:7px 14px!important;border-radius:4px!important;font-size:12px!important;cursor:pointer!important}
+#employee-order-list .order-payment-banner button.active{background:#0f3d5e!important;border-color:#0f3d5e!important;color:#fff!important}
+#employee-order-list .offline-collect-actions-row{display:flex!important;gap:8px!important;margin-top:14px!important}
+#employee-order-list .offline-collect-actions-row .btn,
+#employee-order-list .offline-collect-actions-row .offline-collect-button{display:block!important;flex:1!important;width:auto!important;box-sizing:border-box!important;margin:0!important;padding:8px 12px!important;border-radius:4px!important;font-size:13px!important;cursor:pointer!important}
+#employee-order-list .offline-collect-actions-row .offline-collect-button{border:1px solid #f59a23!important;background:#ff921f!important;color:#fff!important}
+.phone#employee-order-list{position:relative!important;overflow:hidden!important}
+.offline-collect-mask{position:absolute!important;inset:0!important;z-index:10000!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;background:rgba(0,0,0,.42)!important}
+.offline-collect-dialog{width:100%!important;max-width:520px!important;box-sizing:border-box!important;padding:18px!important;border-radius:16px 16px 0 0!important;background:#fff!important;box-shadow:0 -4px 18px rgba(0,0,0,.18)!important}
+.offline-collect-dialog h3{margin:0 0 10px!important;font-size:17px!important}
+.offline-collect-dialog p{margin:8px 0!important;font-size:13px!important;color:#4b5563!important}
+.offline-collect-dialog input[type=range]{width:100%!important;margin:12px 0!important;accent-color:#ff921f!important}
+.offline-collect-actions{display:flex!important;gap:8px!important}
+.offline-collect-actions button{flex:1!important;padding:9px!important;border:1px solid #cfd6dd!important;border-radius:4px!important;background:#fff7ed!important;color:#0b3275!important;cursor:pointer!important}
+.offline-collect-actions .confirm-offline-collect{background:#ff921f!important;border-color:#ff921f!important;color:#fff!important}
+</style>
+<script>
+(function(){
+  function patchEmployeeOrderList(){
+    var page=document.getElementById('employee-order-list');
+    if(!page)return;
+    var banner=page.querySelector('.order-payment-banner');
+    if(banner){
+      var paid=banner.querySelector('[data-payment="paid"]'), unpaid=banner.querySelector('[data-payment="unpaid"]');
+      if(paid&&!paid.dataset.finalBanner){paid.dataset.finalBanner='1';paid.textContent='已支付';}
+      if(unpaid&&!unpaid.dataset.finalBanner){unpaid.dataset.finalBanner='1';unpaid.textContent='未支付';}
+    }
+    var card=page.querySelector('[data-order-payment="unpaid"]');
+    if(!card)return;
+    var immediate=Array.from(card.querySelectorAll('.btn')).find(function(btn){return btn.textContent.trim()==='立即支付';});
+    if(immediate)immediate.remove();
+    if(!card.querySelector('.offline-collect-button')){
+      var button=document.createElement('button');
+      button.type='button';button.className='offline-collect-button';button.textContent='线下收款';
+      var detail=Array.from(card.querySelectorAll('.btn')).find(function(btn){return btn.textContent.trim()==='查看详情';});
+      var actions=document.createElement('div');actions.className='offline-collect-actions-row';
+      if(detail){detail.parentNode.insertBefore(actions,detail);actions.appendChild(detail);}
+      else card.appendChild(actions);
+      actions.appendChild(button);
+      button.onclick=function(){
+        if(document.querySelector('.offline-collect-mask'))return;
+        var mask=document.createElement('div');mask.className='offline-collect-mask';
+        mask.innerHTML='<div class="offline-collect-dialog"><h3>确认线下收款</h3><p>请确认已收到该订单线下款项，确认后订单将变更为已支付。</p><input type="range" min="0" max="100" value="0" aria-label="滑动确认"><div class="offline-collect-actions"><button type="button" class="cancel-offline-collect">取消</button><button type="button" class="confirm-offline-collect" disabled>滑动确认收款</button></div></div>';
+        page.appendChild(mask);
+        var range=mask.querySelector('input[type=range]'),confirm=mask.querySelector('.confirm-offline-collect');
+        range.oninput=function(){confirm.disabled=Number(range.value)<100;};
+        mask.querySelector('.cancel-offline-collect').onclick=function(){mask.remove();};
+        confirm.onclick=function(){
+          card.dataset.orderPayment='paid';
+          card.setAttribute('data-payment-method','线下收款');
+          var amount=Array.from(card.querySelectorAll('.row')).find(function(row){return row.textContent.indexOf('支付金额')!==-1;});
+          if(amount){var method=document.createElement('div');method.className='row';method.innerHTML='<span>支付方式</span><span>线下收款</span>';amount.insertAdjacentElement('afterend',method);}
+          card.querySelector('.offline-collect-button').remove();
+          var print=document.createElement('div');print.className='btn secondary';print.textContent='打印件码';
+          var detail=Array.from(card.querySelectorAll('.btn')).find(function(btn){return btn.textContent.trim()==='查看详情';});
+          if(detail)detail.insertAdjacentElement('beforebegin',print);else card.appendChild(print);
+          card.style.display='none';
+          var paidButton=page.querySelector('[data-payment="paid"]');
+          if(paidButton)paidButton.click();
+          mask.remove();
+          alert('已确认线下收款，订单已转为已支付');
+        };
+      };
+    }
+  }
+  setInterval(patchEmployeeOrderList,100);patchEmployeeOrderList();
+})();
+</script>
+<script>
+(function(){
+  function addReceiverRemoveButtons(){
+    var list=document.querySelector('#mini>.grid>.phone:first-child #receivers');
+    if(!list)return;
+    list.querySelectorAll(':scope>.receiver').forEach(function(card,index){
+      if(index===0||card.querySelector('.receiver-remove-button'))return;
+      var title=card.querySelector('h3');
+      if(!title)return;
+      title.style.display='flex';title.style.alignItems='center';title.style.justifyContent='space-between';
+      var button=document.createElement('button');
+      button.type='button';button.className='receiver-remove-button';button.textContent='剔除';
+      button.onclick=function(){card.remove();};
+      title.appendChild(button);
+    });
+  }
+  setInterval(addReceiverRemoveButtons,100);addReceiverRemoveButtons();
+})();
+</script>
+<style>
+.receiver-remove-button{border:1px solid #e3a3a3;border-radius:4px;background:#fff;color:#c62828;padding:3px 8px;font-size:12px;line-height:18px;cursor:pointer}
+</style>
+<script>
+(function(){
+  function addReceiverHint(){
+    var page=document.querySelector('#mini>.grid>.phone:first-child');
+    if(!page||page.querySelector('.receiver-dev-hint'))return;
+    var picker=page.querySelector('.receiver-picker');
+    if(!picker)return;
+    var hint=document.createElement('div');
+    hint.className='receiver-dev-hint';
+    hint.textContent='开发提示：从小程序主页打开时默认保留上一次选中的收货人；通过下单二维码进入时，优先读取二维码中的网点代码并带出对应收货人。';
+    picker.closest('.field').after(hint);
+    hint.style.display='none';
+    picker.addEventListener('click',function(){hint.style.display='block';});
+  }
+  setInterval(addReceiverHint,100);addReceiverHint();
+})();
+</script>
+<style>
+.receiver-dev-hint{margin:6px 0 8px;padding:7px 9px;border-radius:5px;background:#e7f6ed;color:#16733b;font-size:12px;line-height:18px}
+</style>
+<script>
+(function(){
+  function rebuildAddressBookValue(){
+    var page=document.querySelector('#mini>.grid>.phone:first-child');
+    if(!page)return;
+    var row=Array.from(page.querySelectorAll('.row')).find(function(item){return item.textContent.indexOf('发货档口/厂家')!==-1;});
+    if(!row)return;
+    var value=row.querySelector('span:last-child');
+    if(!value||value.dataset.rebuiltAddressBook==='1')return;
+    var name=value.querySelector('b')?value.querySelector('b').textContent.trim():'杭州某档口';
+    var contacts=page.querySelector('#contacts');
+    value.innerHTML='<b>'+name+'</b> <button type="button" class="address-book-button">通讯录</button>';
+    var button=value.querySelector('button');
+    button.onclick=function(){if(contacts)contacts.style.display=contacts.style.display==='none'?'block':'none';};
+    value.dataset.rebuiltAddressBook='1';
+  }
+  function normalizeAddressBook(){
+    var page=document.querySelector('#mini>.grid>.phone:first-child');
+    if(!page)return;
+    var row=Array.from(page.querySelectorAll('.row')).find(function(item){return item.textContent.indexOf('发货档口/厂家')!==-1;});
+    if(!row)return;
+    var buttons=Array.from(row.querySelectorAll('button')).filter(function(btn){return btn.textContent.trim()==='通讯录';});
+    for(var i=1;i<buttons.length;i++)buttons[i].remove();
+    var contacts=page.querySelector('#contacts');
+    if(contacts&&!contacts.dataset.addressBookBound){
+      contacts.dataset.addressBookBound='1';contacts.style.display='none';
+      var button=buttons[0]||row.querySelector('button');
+      if(button)button.onclick=function(){contacts.style.display=contacts.style.display==='none'?'block':'none';};
+    }
+  }
+  setInterval(function(){rebuildAddressBookValue();normalizeAddressBook();},100);rebuildAddressBookValue();normalizeAddressBook();
+})();
+</script>
+<script>
+(function(){
+  function addStationHint(){
+    var page=document.querySelector('#mini>.grid>.phone:first-child');
+    if(!page||page.querySelector('.station-dev-hint'))return;
+    var select=page.querySelector('select');
+    if(!select)return;
+    var hint=document.createElement('div');
+    hint.className='station-dev-hint';
+    hint.textContent='开发提示：从小程序主页打开时默认保留上一次选中的拼包站；通过下单二维码进入时，优先读取二维码中的网点代码并带出对应拼包站。';
+    select.closest('.row').after(hint);
+  }
+  setInterval(addStationHint,100);addStationHint();
+})();
+</script>
+<style>
+.station-dev-hint{margin:6px 0 8px;padding:7px 9px;border-radius:5px;background:#e7f6ed;color:#16733b;font-size:12px;line-height:18px}
+</style>
+<script>
+(function(){
+  function bindStationHint(){
+    var page=document.querySelector('#mini>.grid>.phone:first-child');
+    if(!page)return;
+    var select=page.querySelector('select'),hint=page.querySelector('.station-dev-hint');
+    if(select&&hint&&!select.dataset.hintBound){
+      select.dataset.hintBound='1';hint.style.display='none';
+      select.addEventListener('click',function(){hint.style.display='block';});
+      select.addEventListener('change',function(){hint.style.display='block';});
+    }
+  }
+  function removeDuplicateAddressBooks(){
+    var page=document.querySelector('#mini>.grid>.phone:first-child');
+    if(!page)return;
+    var row=Array.from(page.querySelectorAll('.row')).find(function(item){return item.textContent.indexOf('发货档口/厂家')!==-1;});
+    if(!row)return;
+    var value=row.querySelector('span:last-child');
+    if(!value)return;
+    var buttons=Array.from(value.querySelectorAll('button')).filter(function(btn){return btn.textContent.trim()==='通讯录';});
+    for(var i=1;i<buttons.length;i++)buttons[i].remove();
+  }
+  function restoreAddressBook(){
+    var page=document.querySelector('#mini>.grid>.phone:first-child');
+    if(!page)return;
+    var row=Array.from(page.querySelectorAll('.row')).find(function(item){return item.textContent.indexOf('发货档口/厂家')!==-1;});
+    if(!row)return;
+    var value=row.querySelector('span:last-child');
+    if(!value)return;
+    if(!value.querySelector('.address-book-button')){
+      var button=document.createElement('button');
+      button.type='button';button.className='address-book-button';button.textContent='通讯录';
+      button.onclick=function(){var box=document.getElementById('contacts');if(box)box.style.display=box.style.display==='none'?'block':'none';else alert('演示：跳转共用网络订单页面及数据');};
+      value.appendChild(button);
+    }
+    row.style.display='flex';row.style.alignItems='center';row.style.justifyContent='space-between';
+    value.style.display='flex';value.style.alignItems='center';value.style.justifyContent='flex-end';value.style.gap='6px';
+  }
+  setInterval(function(){bindStationHint();restoreAddressBook();removeDuplicateAddressBooks();},100);bindStationHint();restoreAddressBook();removeDuplicateAddressBooks();
+})();
+</script>
+<style>
+#mini>.grid>.phone:nth-child(2) .receiver .row{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important}
+#mini>.grid>.phone:nth-child(2) .receiver .row>span:last-child,#mini>.grid>.phone:nth-child(2) .receiver .row>b{margin-left:auto!important;text-align:right!important;white-space:nowrap!important}
+</style>
+<style>
+.mini-order-records .receiver .row{display:flex!important;align-items:center;justify-content:space-between!important;gap:12px}
+.mini-order-records .receiver .row>span:last-child,.mini-order-records .receiver .row>b{margin-left:auto!important;text-align:right!important;white-space:nowrap}
+</style>
+<script>
+(function(){
+  function alignMiniOrderRecords(){
+    document.querySelectorAll('#mini .phone').forEach(function(card){
+      var h=card.querySelector('h2');
+      if(h&&h.textContent.trim()==='拼包下单记录')card.classList.add('mini-order-records');
+    });
+  }
+  setInterval(alignMiniOrderRecords,100);alignMiniOrderRecords();
+})();
+</script>
+<style>
+.scan-pack-final .scan-context-header,.scan-pack-final .scan-context-row{grid-template-columns:minmax(0,1.75fr) minmax(0,1.25fr) 34px 26px!important}
+.scan-pack-final .scan-context-header>span,.scan-pack-final .scan-context-row>span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.scan-pack-final .scan-context-header>span:nth-child(n+3),.scan-pack-final .scan-context-row>span:nth-child(n+3){text-align:right}
+.scan-pack-final .scan-context-header>span:nth-child(2),.scan-pack-final .scan-context-row>span:nth-child(2){text-align:left}
+</style>
+<style>
+.pack-billing-button{float:right;margin-top:-4px;padding:6px 12px;border:0;border-radius:4px;background:#ff941f;color:#fff;font-size:13px;font-weight:600;cursor:pointer}
+</style>
+<script>
+(function () {
+  function addBillingButton() {
+    var page = Array.from(document.querySelectorAll('#app .phone')).find(function (item) { var h=item.querySelector('h2'); return h && h.textContent.trim()==='扫码集包'; });
+    if (!page) return;
+    var title = page.querySelector('h2');
+    if (!title || title.querySelector('.pack-billing-button')) return;
+    title.style.display='flex'; title.style.justifyContent='space-between'; title.style.alignItems='center';
+    var button=document.createElement('button'); button.type='button'; button.className='pack-billing-button'; button.textContent='转开单';
+    title.appendChild(button);
+    if(!button.dataset.billingBound)button.onclick=function(){ alert('演示：进入集包转开单页面，选择寄件人和收货人后开单'); };
+  }
+  window.addEventListener('load', addBillingButton);
+  setTimeout(addBillingButton, 1200);
+})();
+</script>
+<script>
+(function(){
+  function removeDuplicateCodeRows(){
+    var page=document.getElementById('related-package-detail');
+    if(!page)return;
+    page.querySelectorAll('.receiver').forEach(function(card){
+      card.querySelectorAll('.row').forEach(function(row){
+        var label=row.querySelector('span:first-child');
+        if(label&&label.textContent.trim()==='件码')row.remove();
+      });
+    });
+  }
+  setInterval(removeDuplicateCodeRows,100);removeDuplicateCodeRows();
+})();
+</script>
+<script>
+document.addEventListener('click', function (event) {
+  if (event.target.classList.contains('remaining-item-query')) {
+    alert('演示：跳转共用件码查询结果页面及数据');
+  }
+});
+</script>
+<script>
+(function () {
+  document.addEventListener('click', function (event) {
+    if (!event.target.classList.contains('remaining-query-button')) return;
+    setTimeout(function () {
+      var box = document.querySelector('.code-query-box');
+      if (!box || !box.querySelector('h3') || box.querySelector('h3').textContent.trim() !== '余件明细') return;
+      var rows = box.querySelectorAll('.row');
+      Array.from(rows).forEach(function (row) {
+        if (row.querySelectorAll('span').length >= 3) row.querySelectorAll('span')[2].remove();
+        row.classList.add('remaining-two-col');
+      });
+      if (rows[1]) rows[1].querySelectorAll('span')[1].textContent = '王先生(VIP号9527)';
+      if (rows[2]) rows[2].querySelectorAll('span')[1].textContent = '李女士(VIP号9528)';
+      box.querySelectorAll('.remaining-query').forEach(function (button) { button.remove(); });
+      Array.from(box.querySelectorAll('.row')).slice(1).forEach(function (row) {
+        if (row.querySelector('.remaining-item-query')) return;
+        var query = document.createElement('button');
+        query.type = 'button';
+        query.className = 'remaining-item-query';
+        query.textContent = '查询';
+        query.onclick = function () {
+          var mask = box.closest('.code-query-mask');
+          if (mask) mask.remove();
+          var result = document.getElementById('scan-result');
+          if (result) result.scrollIntoView();
+        };
+        row.appendChild(query);
+      });
+      if (rows[0]) {
+        rows[0].innerHTML = '<span>件码</span><span>收货人</span><span>操作</span>';
+        rows[0].classList.remove('remaining-two-col');
+        rows[0].classList.add('remaining-three-col');
+      }
+      var close = box.querySelector('.btn');
+      if (close && !box.querySelector('.remaining-query')) {
+        var query = document.createElement('div');
+        query.className = 'btn secondary remaining-query';
+        query.textContent = '查询';
+        close.before(query);
+        query.onclick = function () {
+          var mask = box.closest('.code-query-mask');
+          if (mask) mask.remove();
+          var result = document.getElementById('scan-result');
+          if (result) result.scrollIntoView();
+        };
+      }
+    }, 0);
+  });
+})();
+</script>
+<style>
+.scan-section-title{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600;color:#4b5563;margin:10px 0 4px;padding-bottom:4px;border-bottom:1px solid #e5e7eb}
+.remaining-item-query{padding:2px 7px;border:1px solid #cfd6dd;border-radius:4px;background:#fff;color:#0f3d5e;font-size:12px;cursor:pointer}
+.code-query-box h3 + .row:first-of-type span:last-child{font-size:0}.code-query-box h3 + .row:first-of-type span:last-child::after{content:'创建时间';font-size:14px}
+.code-query-box:has(h3) .row{font-size:12px!important;line-height:18px}.code-query-box:has(h3) h3{font-size:16px!important}
+.code-query-box .remaining-two-col{display:grid!important;grid-template-columns:1.35fr 1fr!important;white-space:nowrap}.code-query-box .remaining-two-col span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.remaining-query-button{display:inline-block;width:auto;box-sizing:border-box;margin:0;padding:3px 9px;border:1px solid #cfd6dd;border-radius:4px;background:#fff;color:#0f3d5e;font-size:12px;cursor:pointer}
+.code-query-box .remaining-three-col{display:grid!important;grid-template-columns:1.35fr 1fr .5fr!important;white-space:nowrap}
+.code-query-box .remaining-query{display:none!important}
+.code-query-box h3 + .row:first-of-type span:last-child{font-size:12px!important}
+.code-query-box h3 + .row:first-of-type span:last-child::after{content:none!important}
+.code-query-box .row:has(.remaining-item-query){display:grid!important;grid-template-columns:1.35fr 1fr .5fr!important;align-items:center;gap:6px;white-space:nowrap}
+.code-query-box .row:has(.remaining-item-query) .remaining-item-query{width:auto;min-width:44px;box-sizing:border-box;white-space:nowrap}
+.code-query-box h3 + .row{display:grid!important;grid-template-columns:1.35fr 1fr .5fr!important;align-items:center;gap:6px;white-space:nowrap}
+</style>
+<script>
+(function () {
+  function addScanSections() {
+    var page = Array.from(document.querySelectorAll('#app .phone')).find(function (item) { var h=item.querySelector('h2'); return h && h.textContent.trim()==='扫码集包'; });
+    if (!page || page.querySelector('.remaining-query-button')) return;
+    var context = page.querySelector('.scan-receiver-context');
+    var list = page.querySelector('.scanned-code-list');
+    if (!context || !list) return;
+    var receiverTitle = document.createElement('div'); receiverTitle.className='scan-section-title'; receiverTitle.textContent='收货人信息'; context.before(receiverTitle);
+    var listTitle = document.createElement('div'); listTitle.className='scan-section-title'; listTitle.textContent='已扫描'; list.before(listTitle);
+    var button = document.createElement('button'); button.type='button'; button.className='remaining-query-button'; button.textContent='查询余件'; receiverTitle.appendChild(button);
+    button.onclick=function(){
+      var mask=document.createElement('div'); mask.className='code-query-mask';
+      mask.innerHTML='<div class="code-query-box"><h3>余件明细</h3><div class="row" style="display:grid;grid-template-columns:1.5fr 1fr .7fr;font-weight:600;background:#eef3f7"><span>件码</span><span>收货人</span><span>时间</span></div><div class="row" style="display:grid;grid-template-columns:1.5fr 1fr .7fr"><span>HH260929000003</span><span>王先生</span><span>10:12</span></div><div class="row" style="display:grid;grid-template-columns:1.5fr 1fr .7fr"><span>HH260929000004</span><span>李女士</span><span>10:08</span></div><div class="btn secondary">关闭</div></div>';
+      page.appendChild(mask); mask.querySelector('.btn').onclick=function(){mask.remove();};
+    };
+  }
+  window.addEventListener('load', addScanSections);
+  setTimeout(addScanSections, 2200);
+})();
+</script>
+<script>
+(function () {
+  function simplifyScannedCodeLabels() {
+    var list = document.querySelector('#app .scanned-code-list');
+    if (!list) return;
+    var intro = list.querySelector(':scope > .muted');
+    if (intro) intro.remove();
+    var cards = list.querySelectorAll(':scope > .receiver');
+    var receivers = ['王先生(VIP号9527)', '李女士(VIP号9528)'];
+    cards.forEach(function (card, index) {
+      var title = card.querySelector('h3');
+      if (!title) return;
+      var code = title.querySelector('span:first-child');
+      var time = title.querySelector('span:nth-child(2)');
+      if (time) time.textContent = receivers[index] || '';
+      if (code) code.textContent = code.textContent.replace(/^件码\s*/, '');
+    });
+  }
+  window.addEventListener('load', simplifyScannedCodeLabels);
+  setTimeout(simplifyScannedCodeLabels, 1800);
+})();
+</script>
+<style>
+.scan-receiver-context .scan-context-header,.scan-receiver-context .scan-context-row{display:grid!important;grid-template-columns:1.55fr 1.1fr .45fr .45fr;align-items:center;gap:4px}
+.scan-receiver-context .scan-context-header{font-weight:600;background:#eef3f7}
+.scan-receiver-context .scan-context-row span:nth-child(n+3){text-align:right}
+.scan-receiver-context .scan-context-row .remaining{color:#d93025;font-weight:600}
+.scan-receiver-context{font-size:12px;color:#4b5563}
+.scan-receiver-context .row{padding:7px 4px!important;line-height:18px}
+.scan-receiver-context .scan-context-header,.scan-receiver-context .scan-context-row{grid-template-columns:minmax(0,1.65fr) minmax(0,1.1fr) 32px 28px!important}
+.scan-receiver-context .scan-context-row span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scan-receiver-context .scan-context-row span:nth-child(n+3),.scan-receiver-context .scan-context-header span:nth-child(n+3){text-align:center}
+</style>
+<script>
+(function () {
+  function refineScanContext() {
+    var page = Array.from(document.querySelectorAll('#app .phone')).find(function (item) { var h=item.querySelector('h2'); return h && h.textContent.trim()==='扫码集包'; });
+    if (!page) return;
+    page.querySelectorAll(':scope > .row').forEach(function (row) {
+      if (/已扫未转拼包|剩余待扫/.test(row.textContent)) row.remove();
+    });
+    var context = page.querySelector('.scan-receiver-context');
+    if (!context) return;
+    context.innerHTML = '<div class="row scan-context-header"><span>收货人</span><span>库位</span><span>已扫</span><span>余</span></div><div class="row scan-context-row"><span>王先生(VIP号9527)</span><span>洪合-H03-14</span><span>1</span><span class="remaining">5</span></div><div class="row scan-context-row"><span>李女士(VIP号9528)</span><span>洪合-H03-13</span><span>1</span><span class="remaining">3</span></div>';
+  }
+  window.addEventListener('load', function () { setTimeout(refineScanContext, 2300); });
+})();
+</script>
+<script>
+(function () {
+  function updateScanContextTable() {
+    var context = document.querySelector('#app .scan-receiver-context');
+    if (!context) return;
+    context.innerHTML = '<div class="row scan-context-header"><span>收货人</span><span>库位　　已扫　未扫</span></div><div class="row"><span>王先生(VIP号9527)</span><span>洪合-H03-14　 1　　5</span></div><div class="row"><span>李女士(VIP号9528)</span><span>洪合-H03-13　 1　　3</span></div>';
+  }
+  window.addEventListener('load', function () { setTimeout(updateScanContextTable, 1800); });
+})();
+</script>
+<style>
+.scan-receiver-context .scan-context-header{font-weight:600;background:#eef3f7}
+.scan-receiver-context .scan-context-header span:last-child{text-align:left}
+</style>
+<script>
+(function () {
+  function addScanContextHeader() {
+    var context = document.querySelector('#app .scan-receiver-context');
+    if (!context || context.querySelector('.scan-context-header')) return;
+    var header = document.createElement('div');
+    header.className = 'row scan-context-header';
+    header.innerHTML = '<span>收货人</span><span>库位</span>';
+    context.insertBefore(header, context.firstChild);
+  }
+  window.addEventListener('load', addScanContextHeader);
+  setTimeout(addScanContextHeader, 1500);
+})();
+</script>
+<script>
+(function () {
+  function compactScanContext() {
+    var context = document.querySelector('#app .scan-receiver-context');
+    if (!context || context.dataset.compact) return;
+    context.dataset.compact = '1';
+    context.innerHTML = '<div class="row"><span>收货人1</span><span>王先生(VIP号9527)　库位：洪合-H03-14</span></div><div class="row"><span>收货人2</span><span>李女士(VIP号9528)　库位：洪合-H03-13</span></div>';
+  }
+  window.addEventListener('load', compactScanContext);
+  setTimeout(compactScanContext, 1200);
+})();
+</script>
+<style>
+.scanned-code-list .scanned-code-header{display:flex;justify-content:space-between;align-items:center}
+.scanned-code-list .remove-scanned-code{padding:3px 8px;border:1px solid #cfd6dd;border-radius:4px;background:#fff;color:#b42318;font-size:12px;cursor:pointer}
+</style>
+<script>
+(function () {
+  function simplifyScannedCodes() {
+    document.querySelectorAll('#app .scanned-code-list .receiver').forEach(function (card) {
+      var title = card.querySelector('h3');
+      if (!title || title.querySelector('.remove-scanned-code')) return;
+      title.className = 'scanned-code-header';
+      var remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'remove-scanned-code';
+      remove.textContent = '剔除';
+      title.appendChild(remove);
+      card.querySelectorAll('.row').forEach(function (row) { row.remove(); });
+      remove.onclick = function () { card.remove(); };
+    });
+  }
+  window.addEventListener('load', simplifyScannedCodes);
+  setTimeout(simplifyScannedCodes, 1200);
+})();
+</script>
+<script>
+(function () {
+  function arrangeScanPage() {
+    var page = Array.from(document.querySelectorAll('#app .phone')).find(function (item) {
+      var title = item.querySelector('h2'); return title && title.textContent.trim() === '扫码集包';
+    });
+    if (!page) return;
+    var batch = page.querySelector('.row');
+    var group = page.querySelector('.pack-option-group');
+    var context = page.querySelector('.scan-receiver-context');
+    if (batch && group) batch.after(group);
+    if (!page.querySelector('.scanned-code-list')) {
+      var rows = Array.from(page.querySelectorAll(':scope > .row'));
+      var remain = rows.find(function (row) { return row.textContent.indexOf('剩余待扫') !== -1; });
+      var list = document.createElement('div');
+      list.className = 'scanned-code-list';
+      list.innerHTML = '<div class="muted" style="margin:10px 0 4px">已扫描件码（按扫描时间倒序）</div><div class="receiver"><h3><span>件码 HH2609290002</span><span class="muted">10:25</span></h3><div class="row"><span>收货人</span><span>李女士(VIP号9528)</span></div><div class="row"><span>库位</span><span>洪合-H03-13</span></div><div class="row"><span>发货档口/厂家</span><span>义乌某厂家</span></div><div class="row"><span>内物件数</span><span>2</span></div></div><div class="receiver"><h3><span>件码 HH2609290001</span><span class="muted">10:20</span></h3><div class="row"><span>收货人</span><span>王先生(VIP号9527)</span></div><div class="row"><span>库位</span><span>洪合-H03-14</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>内物件数</span><span>3</span></div></div>';
+      if (remain) remain.after(list); else page.appendChild(list);
+    }
+  }
+  window.addEventListener('load', arrangeScanPage);
+  setTimeout(arrangeScanPage, 1000);
+})();
+</script>
+<script>
+(function () {
+  function updateScanContext() {
+    var page = Array.from(document.querySelectorAll('#app .phone')).find(function (item) {
+      var title = item.querySelector('h2'); return title && title.textContent.trim() === '扫码集包';
+    });
+    if (!page) return;
+    var scanButton = Array.from(page.querySelectorAll('.btn')).find(function (item) { return item.textContent.indexOf('扫码枪扫描') !== -1 || item.textContent.indexOf('继续扫码') !== -1; });
+    if (scanButton) scanButton.remove();
+    if (page.querySelector('.scan-receiver-context')) return;
+    var batch = page.querySelector('.row');
+    if (!batch) return;
+    var context = document.createElement('div');
+    context.className = 'scan-receiver-context';
+    context.innerHTML = '<div class="muted" style="margin:10px 0 4px">当前批次收货人及库位</div><div class="row"><span>收货人1</span><span>王先生(VIP号9527)</span></div><div class="row"><span>库位</span><b>洪合-H03-14</b></div><div class="row"><span>收货人2</span><span>李女士(VIP号9528)</span></div><div class="row"><span>库位</span><b>洪合-H03-13</b></div>';
+    batch.after(context);
+  }
+  window.addEventListener('load', updateScanContext);
+  setTimeout(updateScanContext, 900);
+})();
+</script>
+<style>
+.camera-scan-button{display:inline-block;margin-left:8px;padding:4px 9px;border:1px solid #cfd6dd;border-radius:4px;background:#fff;color:#0f3d5e;font-size:12px;cursor:pointer}
+</style>
+<script>
+(function () {
+  function bindScanModes() {
+    var page = Array.from(document.querySelectorAll('#app .phone')).find(function (item) {
+      var title = item.querySelector('h2'); return title && title.textContent.trim() === '扫码集包';
+    });
+    if (!page || page.querySelector('.camera-scan-button')) return;
+    var batchRow = page.querySelector('.row');
+    var scanButton = Array.from(page.querySelectorAll('.btn')).find(function (item) { return item.textContent.trim() === '继续扫码'; });
+    if (!batchRow) return;
+    var camera = document.createElement('button');
+    camera.type = 'button';
+    camera.className = 'camera-scan-button';
+    camera.textContent = '相机扫描';
+    batchRow.querySelector('b').insertAdjacentElement('afterend', camera);
+    camera.onclick = function () { alert('演示：调用手机相机扫描件码；默认优先使用扫码枪直扫。'); };
+    if (scanButton) scanButton.textContent = '扫码枪扫描';
+  }
+  window.addEventListener('load', bindScanModes);
+  setTimeout(bindScanModes, 800);
+})();
+</script>
+<script>
+(function () {
+  function bindFirstScanDisplay() {
+    var page = Array.from(document.querySelectorAll('#app .phone')).find(function (item) {
+      var title = item.querySelector('h2'); return title && title.textContent.trim() === '扫码集包';
+    });
+    if (!page) return;
+    var button = Array.from(page.querySelectorAll('.btn')).find(function (item) { return item.textContent.trim() === '继续扫码'; });
+    if (!button || button.dataset.firstScanBound) return;
+    button.dataset.firstScanBound = '1';
+    button.addEventListener('click', function () {
+      if (page.querySelector('.first-scan-context')) return;
+      var batch = page.querySelector('.row');
+      var context = document.createElement('div');
+      context.className = 'first-scan-context';
+      context.innerHTML = '<div class="row"><span>当前收货人</span><b>王先生(VIP号9527)</b></div><div class="row"><span>当前库位</span><b>洪合-H03-14</b></div><div class="success">首件扫码成功，已建立收货人与库位上下文</div>';
+      if (batch) batch.after(context); else page.insertBefore(context, button);
+    });
+  }
+  window.addEventListener('load', bindFirstScanDisplay);
+  setTimeout(bindFirstScanDisplay, 800);
+})();
+</script>
+<script>
+(function () {
+  function bindPackOptionHint() {
+    var group = document.querySelector('#app .pack-option-group');
+    if (!group || group.dataset.hintBound) return;
+    group.dataset.hintBound = '1';
+    group.querySelectorAll('input').forEach(function (input) {
+      input.addEventListener('change', function () {
+        var hint = group.parentNode.querySelector('.pack-option-dev-hint');
+        if (!hint) {
+          hint = document.createElement('div');
+          hint.className = 'success pack-option-dev-hint';
+          group.insertAdjacentElement('afterend', hint);
+        }
+        hint.textContent = '开发提示：勾选条件后，扫描件码需校验对应收货人或库位；校验不通过时阻止加入、播放语音告警并弹窗提示。两项均未勾选时不触发告警。';
+      });
+    });
+  }
+  window.addEventListener('load', bindPackOptionHint);
+  setTimeout(bindPackOptionHint, 700);
+})();
+</script>
+<script>
+(function () {
+  function updateScanWarning() {
+    var page = Array.from(document.querySelectorAll('.phone')).find(function (item) {
+      var title = item.querySelector('h2'); return title && title.textContent.trim() === '扫码集包';
+    });
+    if (!page) return;
+    var warn = page.querySelector('.warn');
+    var scanButton = Array.from(page.querySelectorAll('.btn')).find(function (button) { return button.textContent.trim() === '继续扫码'; });
+    if (!warn || !scanButton || scanButton.dataset.warningBound) return;
+    scanButton.dataset.warningBound = '1';
+    warn.style.display = 'none';
+    scanButton.onclick = function () {
+      var mask = document.createElement('div');
+      mask.className = 'code-query-mask';
+      mask.innerHTML = '<div class="code-query-box"><h3>扫码校验提示</h3><div class="warn">该件收货人与当前批次不同，已阻止加入。去掉勾选条件重新扫描拼包后可继续。</div><div class="btn secondary">知道了</div></div>';
+      page.appendChild(mask);
+      mask.querySelector('.btn').onclick = function () { mask.remove(); };
+      // 实际接入时此处仅播放语音告警声，不展示额外固定文字提示。
+    };
+  }
+  window.addEventListener('load', updateScanWarning);
+  setTimeout(updateScanWarning, 600);
+})();
+</script>
+<script>
+(function () {
+  function updatePackOptions() {
+    var page = Array.from(document.querySelectorAll('.phone')).find(function (item) {
+      var title = item.querySelector('h2'); return title && title.textContent.trim() === '扫码集包';
+    });
+    if (!page || page.querySelector('.pack-option-group')) return;
+    var old = page.querySelector('.check');
+    if (!old) return;
+    var group = document.createElement('div');
+    group.className = 'check pack-option-group';
+    group.innerHTML = '<label><input type="checkbox" class="pack-by-receiver" checked> 按收货人</label><label><input type="checkbox" class="pack-by-location"> 按库位</label><span class="muted">（默认勾选按收货人）</span>';
+    old.replaceWith(group);
+    var warn = page.querySelector('.warn');
+    function refresh() {
+      var active = group.querySelector('.pack-by-receiver').checked || group.querySelector('.pack-by-location').checked;
+      if (warn) warn.style.display = active ? '' : 'none';
+    }
+    group.querySelectorAll('input').forEach(function (input) { input.addEventListener('change', refresh); });
+    refresh();
+  }
+  window.addEventListener('load', updatePackOptions);
+  setTimeout(updatePackOptions, 500);
+})();
+</script>
+<script>
+(function () {
+  function sortPackDetails() {
+    document.querySelectorAll('#pack-list .pack-detail').forEach(function (detail) {
+      var items = Array.from(detail.querySelectorAll(':scope > .package-detail-item'));
+      items.sort(function (a, b) {
+        function time(item) {
+          var row = Array.from(item.querySelectorAll('.row')).find(function (r) {
+            var label = r.querySelector('span:first-child');
+            return label && (label.textContent.trim() === '创建时间' || label.textContent.trim() === '下单时间');
+          });
+          return row ? row.querySelector('span:last-child').textContent.trim() : '';
+        }
+        return time(b).localeCompare(time(a));
+      });
+      items.forEach(function (item) { detail.appendChild(item); });
+    });
+  }
+  window.addEventListener('load', sortPackDetails);
+  setTimeout(sortPackDetails, 700);
+})();
+</script>
+<script>
+(function () {
+  function addBatchDetail() {
+    var app = document.getElementById('app');
+    var list = document.getElementById('billing-list');
+    if (!app || !list || document.getElementById('batch-detail')) return;
+    var detail = document.createElement('div');
+    detail.className = 'phone';
+    detail.id = 'batch-detail';
+    detail.innerHTML = '<h2>待开单批次详情</h2><div class="row"><span>批次号</span><b>HB26092908</b></div><div class="row"><span>拼包站</span><span>洪合拼包站</span></div><div class="row"><span>收货人</span><span>王先生(VIP号9527)</span></div><div class="row"><span>库位</span><span>洪合-H03-14</span></div><div class="row"><span>已集包件数</span><span>12件</span></div><div class="row"><span>批次状态</span><span>待开单</span></div><div class="receiver"><h3>件码明细</h3><div class="row"><span>件码</span><span>HH2609290001</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>内物件数</span><span>3</span></div><div class="row"><span>外观照片</span><span>0张 查看</span></div><div class="row"><span>创建时间</span><span>2026-09-29 11:05</span></div><div class="row"><span>来源类型</span><span>客户下单</span></div></div><div class="btn secondary">继续加货</div><div class="btn">转开单</div>';
+    list.insertAdjacentElement('afterend', detail);
+  }
+  window.addEventListener('load', addBatchDetail);
+  setTimeout(addBatchDetail, 500);
+})();
+</script>
+<script>
+(function () {
+  function bindPendingReportHint() {
+    var report = document.getElementById('report-v2');
+    if (!report) return;
+    var pending = report.querySelector('.steps .step:first-child');
+    if (!pending || pending.dataset.hintBound) return;
+    pending.dataset.hintBound = '1';
+    pending.addEventListener('click', function () {
+      var old = report.querySelector('.pending-filter-hint');
+      if (old) old.remove();
+      var hint = document.createElement('div');
+      hint.className = 'success pending-filter-hint';
+      hint.textContent = '开发提示：未集包仅展示当前登录手机号所关联收货人的数据，且满足“订单已支付”或“员工创建件码”，同时尚未生成集包运单号。';
+      report.querySelector('.steps').insertAdjacentElement('afterend', hint);
+    });
+  }
+  window.addEventListener('load', bindPendingReportHint);
+  setTimeout(bindPendingReportHint, 500);
+})();
+</script>
+<script>
+(function () {
+  function renamePackTime() {
+    document.querySelectorAll('#pack-list .row span:first-child').forEach(function (label) {
+      if (label.textContent.trim() === '下单时间') label.textContent = '创建时间';
+    });
+  }
+  window.addEventListener('load', renamePackTime);
+  setTimeout(renamePackTime, 500);
+})();
+</script>
+<style>
+#pack-list .code-actions{display:inline-flex;align-items:center;gap:5px;margin-left:6px}
+#pack-list .code-print-button,#pack-list .code-query-button{display:inline-block;padding:2px 7px;border:1px solid #cfd6dd;border-radius:4px;background:#fff;color:#0f3d5e;font-size:12px;line-height:18px;cursor:pointer}
+</style>
+<script>
+(function () {
+  function bindCodePrint() {
+    document.querySelectorAll('#pack-list .package-detail-item .row').forEach(function (row) {
+      var label = row.querySelector('span:first-child');
+      var value = row.querySelector('span:last-child');
+      if (!label || !value || label.textContent.trim() !== '件码' || row.querySelector('.code-actions')) return;
+      var actions = document.createElement('span');
+      actions.className = 'code-actions';
+      var query = document.createElement('button');
+      query.className = 'code-query-button';
+      query.type = 'button';
+      query.textContent = '查询';
+      query.onclick = function () { alert('开发提示：携带当前件码，跳转到件码查询结果页面及对应数据，可继续执行打印或作废操作。'); };
+      var button = document.createElement('button');
+      button.className = 'code-print-button';
+      button.type = 'button';
+      button.textContent = '打印';
+      button.onclick = function () { alert('演示：补打件码标签\n件码：' + value.textContent.trim()); };
+      actions.append(query, button);
+      value.appendChild(actions);
+    });
+  }
+  window.addEventListener('load', bindCodePrint);
+  setTimeout(bindCodePrint, 500);
+})();
+</script>
+<script>
+(function () {
+  function renamePackLocation() {
+    document.querySelectorAll('#pack-list .row span:first-child').forEach(function (label) {
+      if (label.textContent.trim() === '收货人库位') label.textContent = '库位';
+    });
+  }
+  window.addEventListener('load', renamePackLocation);
+  setTimeout(renamePackLocation, 300);
+})();
+</script>
+<script>
+(function () {
+  function showBatchChoice(title, existing) {
+    var mask = document.createElement('div');
+    mask.className = 'code-query-mask';
+    mask.innerHTML = '<div class="code-query-box"><h3>' + title + '</h3><div class="success">发现该收货人存在未开单拼包批次：' + existing + '</div><p class="muted">请选择继续向该批次加货，或创建全新拼包批次。</p><div class="code-query-actions"><div class="btn batch-continue">继续加货</div><div class="btn batch-new">新建批次</div></div><div class="btn secondary batch-cancel">取消</div></div>';
+    var host = document.getElementById('pack-list') || document.body;
+    host.appendChild(mask);
+    mask.querySelector('.batch-continue').onclick = function () { alert('演示：进入批次 ' + existing + '，继续扫码加货'); mask.remove(); };
+    mask.querySelector('.batch-new').onclick = function () { alert('演示：创建全新拼包批次'); mask.remove(); };
+    mask.querySelector('.batch-cancel').onclick = function () { mask.remove(); };
+  }
+  function bindBatchActions() {
+    var app = document.getElementById('app');
+    if (!app) return;
+    var workbench = Array.from(app.querySelectorAll('.phone')).find(function (page) { return page.querySelector('h2') && page.querySelector('h2').textContent.trim() === '拼包工作台'; });
+    if (workbench) {
+      var scan = Array.from(workbench.querySelectorAll('.btn')).find(function (button) { return button.textContent.trim() === '扫描集包'; });
+      if (scan && !scan.dataset.batchBound) { scan.dataset.batchBound = '1'; scan.onclick = function () { alert('演示：创建全新的拼包批次，进入扫码集包页面'); }; }
+    }
+    document.querySelectorAll('#pack-list .btn').forEach(function (button) {
+      if (button.textContent.trim() !== '进入扫码集包' || button.dataset.batchBound) return;
+      button.dataset.batchBound = '1';
+      button.onclick = function () { var card = button.closest('.pack-card'); var receiver = card && card.querySelector('h3 span'); showBatchChoice(receiver ? receiver.textContent.trim() : '收货人', 'HB26092908'); };
+    });
+  }
+  window.addEventListener('load', bindBatchActions);
+  setTimeout(bindBatchActions, 600);
+})();
+</script>
+<script>
+(function () {
+  function setLongPickupAddress() {
+    var order = document.querySelector('#pickup-list > .receiver');
+    if (!order) return;
+    var row = Array.from(order.querySelectorAll(':scope > .row')).find(function (item) {
+      return item.textContent.indexOf('取货地址') !== -1;
+    });
+    if (!row) return;
+    var value = row.querySelector('span:last-child');
+    if (value) value.textContent = '杭州市上城区四季青街道新杭派服装市场A座3楼308号档口';
+  }
+  window.addEventListener('load', setLongPickupAddress);
+  setTimeout(setLongPickupAddress, 300);
+})();
+</script>
+<script>
+(function () {
+  function bindPickupPrint() {
+    document.querySelectorAll('#pickup-list .btn').forEach(function (button) {
+      if (button.textContent.trim() !== '打印件码' || button.dataset.printBound) return;
+      button.dataset.printBound = '1';
+      button.onclick = function () {
+        var host = button.closest('.receiver');
+        var names = Array.from(host.querySelectorAll('.pickup-recipient h3')).map(function (title) { return title.textContent.trim(); });
+        var mask = document.createElement('div');
+        mask.className = 'print-picker-mask';
+        mask.innerHTML = '<div class="print-picker"><h3>选择打印收货人件码</h3>' + names.map(function (name, index) { return '<label><input type="checkbox" checked> 收货人' + (index + 1) + '：' + name + '</label>'; }).join('') + '<div class="btn">确认打印</div><div class="btn secondary">取消</div></div>';
+        host.appendChild(mask);
+        mask.querySelector('.btn:not(.secondary)').onclick = function () { alert('演示：已提交打印任务，共打印 ' + mask.querySelectorAll('input:checked').length + ' 位收货人的件码'); mask.remove(); };
+        mask.querySelector('.btn.secondary').onclick = function () { mask.remove(); };
+      };
+    });
+  }
+  window.addEventListener('load', bindPickupPrint);
+  setTimeout(bindPickupPrint, 500);
+})();
+</script>
+<style>
+.code-query-mask{position:absolute;inset:0;background:#0006;display:flex;align-items:flex-end;justify-content:center;z-index:30}
+.code-query-box{width:100%;box-sizing:border-box;background:#fff;border-radius:14px 14px 0 0;padding:16px}.code-query-box h3{margin:0 0 12px}.code-query-box input{width:100%;box-sizing:border-box;padding:10px;border:1px solid #cfd6dd;border-radius:5px;text-align:center}.code-query-actions{display:flex;gap:8px}.code-query-actions .btn{flex:1}
+</style>
+<script>
+(function () {
+  function bindCodeQuery() {
+    var workbench = Array.from(document.querySelectorAll('#app .phone')).find(function (page) {
+      var title = page.querySelector('h2'); return title && title.textContent.trim() === '拼包工作台';
+    });
+    if (!workbench) return;
+    var button = Array.from(workbench.querySelectorAll('.btn')).find(function (item) { return item.textContent.trim() === '查询件码'; });
+    if (!button || button.dataset.codeQueryBound) return;
+    button.dataset.codeQueryBound = '1';
+    button.onclick = function () {
+      var mask = document.createElement('div');
+      mask.className = 'code-query-mask';
+      mask.innerHTML = '<div class="code-query-box"><h3>查询件码</h3><input value="HH2609290002" placeholder="请输入或扫描件码"><div class="code-query-actions"><div class="btn secondary code-scan">扫描条码</div><div class="btn code-submit">查询</div></div><div class="btn secondary code-cancel">取消</div></div>';
+      workbench.appendChild(mask);
+      mask.querySelector('.code-scan').onclick = function () { alert('演示：调用扫码能力，扫描后自动回填件码'); };
+      mask.querySelector('.code-submit').onclick = function () { mask.remove(); var result = document.getElementById('scan-result'); if (result) result.scrollIntoView(); };
+      mask.querySelector('.code-cancel').onclick = function () { mask.remove(); };
+    };
+  }
+  window.addEventListener('load', bindCodeQuery);
+  setTimeout(bindCodeQuery, 500);
+})();
+</script>
+<style>
+.print-picker-mask{position:absolute;inset:0;background:#0006;display:flex;align-items:flex-end;justify-content:center;z-index:30}
+.print-picker{width:100%;box-sizing:border-box;background:#fff;border-radius:14px 14px 0 0;padding:16px}
+.print-picker h3{margin:0 0 10px}.print-picker label{display:block;padding:10px 0;border-bottom:1px solid #eef0f2;font-size:14px}.print-picker .btn{margin-top:10px}
+</style>
+<script>
+(function () {
+  function bindPrintDialog() {
+    var page = document.getElementById('employee-order-list');
+    if (!page) return;
+    page.querySelectorAll('.btn').forEach(function (button) {
+      if (button.textContent.trim() !== '打印件码' || button.dataset.printBound) return;
+      button.dataset.printBound = '1';
+      button.onclick = function () {
+        var mask = document.createElement('div');
+        mask.className = 'print-picker-mask';
+        mask.innerHTML = '<div class="print-picker"><h3>选择打印收货人件码</h3><label><input type="checkbox" checked> 收货人1：王先生(VIP号9527)</label><label><input type="checkbox" checked> 收货人2：李女士(VIP号9528)</label><label><input type="checkbox" checked> 收货人3：陈先生（其他）</label><div class="btn">确认打印</div><div class="btn secondary">取消</div></div>';
+        page.appendChild(mask);
+        mask.querySelector('.btn:not(.secondary)').onclick = function () {
+          var selected = Array.from(mask.querySelectorAll('input:checked')).length;
+          alert('演示：已提交打印任务，共打印 ' + selected + ' 位收货人的件码');
+          mask.remove();
+        };
+        mask.querySelector('.btn.secondary').onclick = function () { mask.remove(); };
+      };
+    });
+  }
+  window.addEventListener('load', bindPrintDialog);
+  setTimeout(bindPrintDialog, 500);
+})();
+</script>
+<script>
+(function () {
+  function renameScanResult() {
+    var title = document.querySelector('#scan-result h2');
+    if (title) title.textContent = '件码查询结果';
+  }
+  window.addEventListener('load', renameScanResult);
+  setTimeout(renameScanResult, 300);
+})();
+</script>
+<script>
+(function () {
+  var attempts = 0;
+  function insertPaymentStatus() {
+    var page = document.getElementById('scan-result');
+    if (!page || page.querySelector('.scan-payment-status-row')) return;
+    var source = Array.from(page.querySelectorAll('.row')).find(function (row) {
+      return row.textContent.indexOf('来源类型') !== -1;
+    });
+    if (!source) {
+      if (attempts++ < 30) setTimeout(insertPaymentStatus, 100);
+      return;
+    }
+    var row = document.createElement('div');
+    row.className = 'row scan-payment-status-row';
+    row.innerHTML = '<span>支付状态</span><span>无需支付（员工创建）</span>';
+    source.after(row);
+  }
+  window.addEventListener('load', insertPaymentStatus);
+})();
+</script>
+<script>
+(function () {
+  var attempts = 0;
+  function insertCargoRows() {
+    var page = document.getElementById('scan-result');
+    if (!page) return;
+    if (page.querySelector('.scan-cargo-count-row')) return;
+    var source = Array.from(page.querySelectorAll('.row')).find(function (row) {
+      return row.textContent.indexOf('来源类型') !== -1;
+    });
+    if (!source) {
+      if (attempts++ < 30) setTimeout(insertCargoRows, 100);
+      return;
+    }
+    var count = document.createElement('div');
+    count.className = 'row scan-cargo-count-row';
+    count.innerHTML = '<span>内物件数</span><span>2</span>';
+    var photos = document.createElement('div');
+    photos.className = 'row scan-photo-row';
+    photos.innerHTML = '<span>外观照片</span><span>0张 <button class="photo-view">查看</button></span>';
+    source.after(count, photos);
+  }
+  window.addEventListener('load', insertCargoRows);
+})();
+</script>
+<script>
+(function () {
+  function addScanCargoInfo() {
+    var page = document.getElementById('scan-result');
+    if (!page || page.querySelector('.scan-cargo-count-row')) return;
+    var source = page.querySelector('.scan-source-row');
+    if (!source) return;
+    var count = document.createElement('div');
+    count.className = 'row scan-cargo-count-row';
+    count.innerHTML = '<span>内物件数</span><span>2</span>';
+    var photos = document.createElement('div');
+    photos.className = 'row scan-photo-row';
+    photos.innerHTML = '<span>外观照片</span><span>0张 <button class="photo-view">查看</button></span>';
+    source.after(count, photos);
+  }
+  window.addEventListener('load', addScanCargoInfo);
+  setTimeout(addScanCargoInfo, 300);
+})();
+</script>
+<script>
+(function(){
+  function addRelatedPhotos(){
+    var page=document.getElementById('related-package-detail');
+    if(!page||page.querySelector('.related-package-photo-row'))return;
+    var time=Array.from(page.querySelectorAll('.row')).find(function(row){return row.textContent.indexOf('集包时间')!==-1;});
+    if(time){var batch=document.createElement('div');batch.className='row related-package-photo-row';batch.innerHTML='<span>集包照片</span><span>1张 <button class="photo-view related-photo-view">查看</button></span>';time.after(batch);}
+    page.querySelectorAll('.receiver').forEach(function(card,index){var detail=document.createElement('div');detail.className='row related-code-photo-row';detail.innerHTML='<span>外观照片</span><span>'+(index===0?'1张':'0张')+' <button class="photo-view related-photo-view">查看</button></span>';card.appendChild(detail);});
+    page.querySelectorAll('.related-photo-view').forEach(function(btn){btn.onclick=function(){alert('演示：查看对应集包照片或件码外观照片');};});
+  }
+  setInterval(addRelatedPhotos,100);addRelatedPhotos();
+})();
+</script>
+<script>
+(function () {
+  function addScanMetadata() {
+    var page = document.getElementById('scan-result');
+    if (!page || page.querySelector('.scan-created-row')) return;
+    var location = page.querySelector('.scan-location-row');
+    if (!location) return;
+    var created = document.createElement('div');
+    created.className = 'row scan-created-row';
+    created.innerHTML = '<span>创建时间</span><span>2026-09-29 10:20</span>';
+    var source = document.createElement('div');
+    source.className = 'row scan-source-row';
+    source.innerHTML = '<span>来源类型</span><span>员工创建</span>';
+    location.after(created, source);
+  }
+  window.addEventListener('load', addScanMetadata);
+  setTimeout(addScanMetadata, 300);
+})();
+</script>
+<script>
+(function () {
+  function addScanLocation() {
+    var page = document.getElementById('scan-result');
+    if (!page || page.querySelector('.scan-location-row')) return;
+    var rows = Array.from(page.querySelectorAll('.row'));
+    var receiverRow = rows.find(function (row) { return row.textContent.indexOf('收货人') !== -1; });
+    if (!receiverRow) return;
+    var row = document.createElement('div');
+    row.className = 'row scan-location-row';
+    row.innerHTML = '<span>库位</span><span>洪合-H03-13</span>';
+    receiverRow.after(row);
+  }
+  window.addEventListener('load', addScanLocation);
+  setTimeout(addScanLocation, 300);
+})();
+</script>
+<script>
+(function () {
+  function syncAppOtherReceiver() {
+    var record = document.getElementById('employee-order-list');
+    if (record) {
+      var paid = record.querySelector('[data-order-payment="paid"]');
+      if (paid && !paid.querySelector('.app-third-receiver-row')) {
+        var rows = Array.from(paid.querySelectorAll(':scope > .row'));
+        var amount = rows.find(function (row) { return row.textContent.indexOf('支付金额') !== -1; });
+        if (amount) {
+          var row = document.createElement('div');
+          row.className = 'row app-third-receiver-row';
+          row.innerHTML = '<span>收货人3</span><span>陈先生（其他）</span>';
+          amount.before(row);
+        }
+      }
+    }
+    var detail = document.getElementById('employee-order-detail');
+    if (detail && !detail.querySelector('.app-third-receiver')) {
+      var receiver = document.createElement('div');
+      receiver.className = 'receiver app-third-receiver';
+      receiver.innerHTML = '<h3>收货人3：陈先生（其他）</h3><div class="row"><span>电话</span><span>13912345678</span></div><div class="row"><span>详细地址</span><span>杭州市上城区四季青街道88号</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>件码</span><span>HH2609290005</span></div><div class="row"><span>库位</span><span>其他</span></div><div class="row"><span>拼包状态</span><span>待集包</span></div>';
+      detail.appendChild(receiver);
+    }
+  }
+  window.addEventListener('load', syncAppOtherReceiver);
+  setTimeout(syncAppOtherReceiver, 300);
+})();
+</script>
+<script>
+(function () {
+  function fixOtherOrder() {
+    var page = document.querySelector('#mini > .grid > .phone:nth-child(2)');
+    if (!page) return;
+    var cards = page.querySelectorAll(':scope > .receiver');
+    var card = cards[1];
+    if (!card) return;
+    card.querySelectorAll('.row').forEach(function (row) {
+      var label = row.querySelector('span:first-child');
+      var value = row.querySelector('span:last-child');
+      if (label && value && label.textContent.trim() === '收货人') value.textContent = '陈先生（其他）';
+    });
+  }
+  window.addEventListener('load', fixOtherOrder);
+  setTimeout(fixOtherOrder, 300);
+})();
+</script>
+<script>
+(function () {
+  function maskVipNames() {
+    document.querySelectorAll('#mini .phone span, #mini .phone h3').forEach(function (node) {
+      if (node.textContent.indexOf('VIP号') === -1) return;
+      node.textContent = node.textContent
+        .replace(/([\u4e00-\u9fa5])先生/g, '$1*生')
+        .replace(/([\u4e00-\u9fa5])女士/g, '$1*士');
+    });
+  }
+  window.addEventListener('load', maskVipNames);
+  setTimeout(maskVipNames, 300);
+})();
+</script>
+<script>
+(function () {
+  function addThirdReceiver() {
+    var card = document.querySelector('#order-list > .receiver');
+    if (!card || card.querySelector('.third-receiver-row')) return;
+    var rows = Array.from(card.querySelectorAll(':scope > .row'));
+    var payment = rows.find(function (row) { return row.textContent.indexOf('支付金额') !== -1; });
+    if (!payment) return;
+    var row = document.createElement('div');
+    row.className = 'row third-receiver-row';
+    row.innerHTML = '<span>收货人3</span><span>陈先生（其他）</span>';
+    payment.parentNode.insertBefore(row, payment);
+  }
+  window.addEventListener('load', addThirdReceiver);
+  setTimeout(addThirdReceiver, 300);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html><script>
+(function(){
+  function keepScanPackNew(){
+    var page=Array.from(document.querySelectorAll('#app .phone')).find(function(item){var h=item.querySelector('h2');return h&&h.textContent.trim()==='扫码集包';});
+    if(!page)return;
+    var text=page.textContent||'';
+    if(text.indexOf('不同收货人拼包')===-1&&text.indexOf('按收货人')===-1)return;
+    page.dataset.scanPackFinal='1';
+    var title=page.querySelector('h2');
+    if(title)title.innerHTML='扫码集包 <button class="pack-billing-button" type="button">转开单</button>';
+    var rows=page.querySelectorAll('.row');
+    if(rows.length){rows[0].innerHTML='<span>批次</span><b>HB26092908</b><button class="camera-scan-button" type="button">相机扫描</button>';}
+    page.querySelectorAll('.check,.warn').forEach(function(node){node.remove();});
+    var content='<div class="check pack-option-group"><label><input type="checkbox" checked> 按收货人</label><label><input type="checkbox"> 按库位</label><span class="muted">（默认勾选按收货人）</span></div><div class="scan-section-title">收货人信息 <button class="remaining-query-button" type="button">查询余件</button></div><div class="scan-receiver-context"><div class="row scan-context-header"><span>收货人</span><span>库位</span><span>已扫</span><span>余</span></div><div class="row scan-context-row"><span>王先生(VIP号9527)</span><span>洪合-H03-14</span><span>1</span><span class="remaining">5</span></div><div class="row scan-context-row"><span>李女士(VIP号9528)</span><span>洪合-H03-13</span><span>1</span><span class="remaining">3</span></div></div><div class="scan-section-title">已扫描</div><div class="scanned-code-list"><div class="receiver"><h3 class="scanned-code-header"><span>HH2609290002</span><span>李女士(VIP号9528)</span><button class="remove-scanned-code" type="button">剔除</button></h3></div><div class="receiver"><h3 class="scanned-code-header"><span>HH2609290001</span><span>王先生(VIP号9527)</span><button class="remove-scanned-code" type="button">剔除</button></h3></div></div>';
+    Array.from(page.children).slice(1).forEach(function(node){node.remove();});
+    page.insertAdjacentHTML('beforeend',content);
+    page.querySelector('.pack-billing-button').onclick=function(){alert('演示：进入集包转开单页面');};
+    page.querySelector('.camera-scan-button').onclick=function(){alert('演示：调用手机相机扫描件码');};
+    page.querySelector('.remaining-query-button').onclick=function(){alert('演示：打开余件明细，可按件码查询');};
+    page.querySelectorAll('.remove-scanned-code').forEach(function(btn){btn.onclick=function(){btn.closest('.receiver').remove();};});
+  }
+  keepScanPackNew();
+})();
+</script>
+<style>
+#app .phone.scan-pack-final{font-size:14px;line-height:1.35;overflow:hidden}
+.scan-pack-final h2{margin-bottom:12px}
+.scan-pack-final .scan-batch-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #eef0f2}
+.scan-pack-final .scan-batch-row b{margin-left:auto}
+.scan-pack-final .camera-scan-button,.scan-pack-final .remaining-query-button{border:1px solid #cfd6dd;border-radius:4px;background:#fff;color:#0f3d5e;padding:5px 9px;cursor:pointer;font-size:12px;white-space:nowrap}
+.scan-pack-final .pack-option-group{display:flex;align-items:center;gap:6px;padding:10px 0;margin:0;border-bottom:1px solid #eef0f2;white-space:nowrap}
+.scan-pack-final .pack-option-group label{cursor:pointer}
+.scan-pack-final .scan-section-title{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;padding:10px 0 7px}
+.scan-pack-final .scan-receiver-context{border:1px solid #d5dbe1;border-radius:6px;overflow:hidden}
+.scan-pack-final .scan-context-header,.scan-pack-final .scan-context-row{display:grid;grid-template-columns:1.7fr 1.2fr .45fr .4fr;align-items:center;gap:6px;padding:8px 9px;border-bottom:1px solid #eef0f2}
+.scan-pack-final .scan-context-header{background:#eaf1f6;font-weight:600;font-size:12px}
+.scan-pack-final .scan-context-row{font-size:12px}
+.scan-pack-final .scan-context-row span:nth-child(n+3){text-align:right}
+.scan-pack-final .remaining{color:#d93025;font-weight:600}
+.scan-pack-final .scanned-code-list .receiver{margin:7px 0;padding:10px;border:1px solid #cfd6dd;background:#fafbfc}
+.scan-pack-final .scanned-code-header{display:grid;grid-template-columns:1fr 1.2fr auto;gap:8px;align-items:center;margin:0;font-size:13px}
+.scan-pack-final .remove-scanned-code{border:1px solid #e3a3a3;border-radius:4px;background:#fff;color:#c62828;padding:4px 8px;font-size:12px;cursor:pointer}
+</style>
+<script>
+(function(){
+  var markup='<h2 style="display:flex;justify-content:space-between;align-items:center">扫码集包 <button class="pack-billing-button" type="button">转开单</button></h2><div class="scan-batch-row"><span>批次</span><b>HB26092908</b><button class="camera-scan-button" type="button">相机扫描</button></div><div class="pack-option-group"><label><input type="checkbox" checked> 按收货人</label><label><input type="checkbox"> 按库位</label><span class="muted">（默认勾选按收货人）</span></div><div class="scan-section-title">收货人信息 <button class="remaining-query-button" type="button">查询余件</button></div><div class="scan-receiver-context"><div class="scan-context-header"><span>收货人</span><span>库位</span><span>已扫</span><span>余</span></div><div class="scan-context-row"><span>王先生(VIP号9527)</span><span>洪合-H03-14</span><span>1</span><span class="remaining">5</span></div><div class="scan-context-row"><span>李女士(VIP号9528)</span><span>洪合-H03-13</span><span>1</span><span class="remaining">3</span></div></div><div class="scan-section-title">已扫描</div><div class="scanned-code-list"><div class="receiver"><h3 class="scanned-code-header"><span>HH2609290002</span><span>李女士(VIP号9528)</span><button class="remove-scanned-code" type="button">剔除</button></h3></div><div class="receiver"><h3 class="scanned-code-header"><span>HH2609290001</span><span>王先生(VIP号9527)</span><button class="remove-scanned-code" type="button">剔除</button></h3></div></div>';
+  function bind(page){
+    page.querySelector('.pack-billing-button').onclick=function(){alert('演示：进入集包转开单页面');};
+    page.querySelector('.camera-scan-button').onclick=function(){alert('演示：调用手机相机扫描件码');};
+    page.querySelector('.remaining-query-button').onclick=function(){alert('演示：打开余件明细，可按件码查询');};
+    page.querySelectorAll('.remove-scanned-code').forEach(function(btn){btn.onclick=function(){btn.closest('.receiver').remove();};});
+  }
+  function force(){
+    var page=Array.from(document.querySelectorAll('#app .phone')).find(function(item){var h=item.querySelector('h2');return h&&h.textContent.indexOf('扫码集包')===0;});
+    if(!page)return;
+    if(page.dataset.scanPackFinal==='1')return;
+    if(!page.classList.contains('scan-pack-final')||!page.querySelector('.scan-batch-row')||!page.querySelector('.remaining-query-button')){
+      page.classList.add('scan-pack-final');page.innerHTML=markup;bind(page);
+    }
+  }
+  force();
+})();
+</script>
+<script>
+window.addEventListener('load', function () {
+  var page = document.getElementById('employee-order-list');
+  if (!page) return;
+  var banner = page.querySelector('.order-payment-banner');
+  if (!banner || banner.querySelector('.order-filter-button')) return;
+  var button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'order-filter-button';
+  button.textContent = '筛选';
+  banner.appendChild(button);
+  var panel = document.createElement('div');
+  panel.className = 'order-filter-panel hidden';
+  panel.innerHTML = '<div class="field"><label>发货人</label><input placeholder="请输入发货人/厂家"></div><div class="field"><label>收货人</label><input placeholder="请输入收货人"></div><div class="field"><label>VIP号</label><input placeholder="请输入VIP号"></div><div class="btn secondary">查询</div>';
+  banner.insertAdjacentElement('afterend', panel);
+  button.onclick = function () { panel.classList.toggle('hidden'); };
+});
+</script>
+<script>
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    var orderCard = document.querySelector('#order-list .receiver');
+    if (orderCard && !orderCard.querySelector('.third-receiver-row')) {
+      var row = document.createElement('div');
+      row.className = 'row third-receiver-row';
+      row.innerHTML = '<span>收货人3</span><span>陈先生（其他）</span>';
+      var amount = Array.from(orderCard.querySelectorAll('.row')).find(function (item) {
+        return item.textContent.indexOf('支付金额') !== -1;
+      });
+      if (amount) amount.before(row);
+    }
+    var detail = Array.from(document.querySelectorAll('#mini .phone')).find(function (page) {
+      var title = page.querySelector('h2');
+      return title && title.textContent.trim() === '拼包订单详情';
+    });
+    if (detail && !detail.querySelector('.third-receiver-detail')) {
+      var receiver = document.createElement('div');
+      receiver.className = 'receiver third-receiver-detail';
+      receiver.innerHTML = '<h3>收货人3 · 陈先生（其他）</h3><div class="row"><span>电话</span><span>13912345678</span></div><div class="row"><span>详细地址</span><span>杭州市上城区四季青街道88号</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>件码</span><span>HH2609290005</span></div><div class="row"><span>库位</span><span>其他</span></div><div class="row"><span>拼包状态</span><span>待集包</span></div>';
+      var payment = Array.from(detail.querySelectorAll('.btn')).find(function (button) {
+        return button.textContent.trim() === '立即支付';
+      });
+      if (payment) payment.before(receiver); else detail.appendChild(receiver);
+    }
+  }, 0);
+});
+</script>
+<script>
+window.addEventListener('load', function () {
+  document.querySelectorAll('.phone').forEach(function (page) {
+    var title = page.querySelector('h2');
+    if (!title || title.textContent.trim() !== '拼包订单详情') return;
+    var other = page.querySelector('.other-receiver-detail');
+    if (other) other.remove();
+  });
+  });
+</script>
+<script>
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    document.querySelectorAll('.phone').forEach(function (page) {
+      var title = page.querySelector('h2');
+      if (!title || title.textContent.trim() !== '拼包订单详情') return;
+      var payment = Array.from(page.querySelectorAll('.btn')).find(function (button) {
+        return button.textContent.trim() === '立即支付';
+      });
+      if (payment) page.appendChild(payment);
+    });
+  }, 0);
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var pickupTitle = document.querySelector('#pickup-list h2');
+  if (pickupTitle) pickupTitle.textContent = '待揽收列表';
+  var orderPage = document.getElementById('order-list');
+  if (!orderPage || orderPage.querySelector('.order-payment-banner')) return;
+  var style = document.createElement('style');
+  style.textContent = '#order-list .order-payment-banner{display:flex;gap:6px;margin:10px 0}.order-payment-banner button{border:1px solid #d5dbe1;background:#fff;color:#6b7280;padding:6px 12px;border-radius:4px;font-size:12px;cursor:pointer}.order-payment-banner button.active{background:#0f3d5e;color:#fff;border-color:#0f3d5e}';
+  document.head.appendChild(style);
+  var banner = document.createElement('div');
+  banner.className = 'order-payment-banner';
+  banner.innerHTML = '<button type="button" data-payment="paid">已支付</button><button type="button" data-payment="unpaid">未支付</button>';
+  orderPage.querySelector('h2').insertAdjacentElement('afterend', banner);
+  var cards = Array.from(orderPage.querySelectorAll('.receiver'));
+  function showPayment(type) {
+    cards.forEach(function(card) {
+      var unpaid = card.textContent.indexOf('未支付') !== -1;
+      card.style.display = (type === 'paid' ? !unpaid : unpaid) ? '' : 'none';
+    });
+    banner.querySelectorAll('button').forEach(function(button) {
+      button.classList.toggle('active', button.dataset.payment === type);
+    });
+  }
+  banner.querySelector('[data-payment="paid"]').onclick = function(){ showPayment('paid'); };
+  banner.querySelector('[data-payment="unpaid"]').onclick = function(){ showPayment('unpaid'); };
+  showPayment('paid');
+  var app = document.getElementById('app');
+  if (app && !document.getElementById('employee-order-list')) {
+    var appGrid = app.querySelector('.grid');
+    var page = document.createElement('div');
+    page.className = 'phone';
+    page.id = 'employee-order-list';
+    page.innerHTML = '<h2>拼包下单记录</h2><div class="order-payment-banner"><button type="button" data-payment="paid">已支付</button><button type="button" data-payment="unpaid">未支付</button></div><div class="receiver" data-order-payment="paid"><h3>订单 HH20260929001</h3><div class="row"><span>拼包站</span><span>洪合拼包站</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>收货人</span><span>王先生、李女士</span></div><div class="row"><span>支付金额</span><b>¥200</b></div><div class="btn secondary">查看详情</div></div><div class="receiver" data-order-payment="unpaid"><h3>订单 HH20260929002</h3><div class="row"><span>拼包站</span><span>四季青拼包站</span></div><div class="row"><span>发货档口/厂家</span><span>义乌某厂家</span></div><div class="row"><span>收货人</span><span>赵先生</span></div><div class="row"><span>支付金额</span><b>¥160</b></div><div class="btn">立即支付</div></div>';
+    appGrid.insertBefore(page, appGrid.children[1] || null);
+    var buttons = page.querySelectorAll('.order-payment-banner button');
+    var cards = page.querySelectorAll('[data-order-payment]');
+    function showEmployeeOrders(type) {
+      cards.forEach(function(card){ card.style.display = card.dataset.orderPayment === type ? '' : 'none'; });
+      buttons.forEach(function(button){ button.classList.toggle('active', button.dataset.payment === type); });
+    }
+    buttons[0].onclick = function(){ showEmployeeOrders('paid'); };
+    buttons[1].onclick = function(){ showEmployeeOrders('unpaid'); };
+    showEmployeeOrders('paid');
+  }
+});
+</script>
+<style>
+.scan-pack-final .scan-summary-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}
+.scan-pack-final .scan-summary-table th{background:#eaf1f6;font-weight:600;text-align:left;padding:8px 6px;white-space:nowrap}
+.scan-pack-final .scan-summary-table td{padding:8px 6px;border-bottom:1px solid #eef0f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scan-pack-final .scan-summary-table th:nth-child(1),.scan-pack-final .scan-summary-table td:nth-child(1){width:42%}
+.scan-pack-final .scan-summary-table th:nth-child(2),.scan-pack-final .scan-summary-table td:nth-child(2){width:34%}
+.scan-pack-final .scan-summary-table th:nth-child(3),.scan-pack-final .scan-summary-table td:nth-child(3),.scan-pack-final .scan-summary-table th:nth-child(4),.scan-pack-final .scan-summary-table td:nth-child(4){width:12%;text-align:right}
+</style>
+<script>
+(function(){
+  function rebuild(){
+    var page=Array.from(document.querySelectorAll('#app .phone')).find(function(item){var h=item.querySelector('h2');return h&&h.textContent.indexOf('扫码集包')===0;});
+    if(!page||page.dataset.scanPackFinal==='1'||page.querySelector('.scan-summary-table'))return;
+    page.classList.add('scan-pack-final');
+    var old=page.innerHTML;
+    if(old.indexOf('按收货人')===-1&&old.indexOf('不同收货人拼包')===-1)return;
+    page.innerHTML='<h2 style="display:flex;justify-content:space-between;align-items:center">扫码集包 <button class="pack-billing-button" type="button">转开单</button></h2><div class="scan-batch-row"><span>批次</span><b>HB26092908</b><button class="camera-scan-button" type="button">相机扫描</button></div><div class="pack-option-group"><label><input type="checkbox" checked> 按收货人</label><label><input type="checkbox"> 按库位</label><span class="muted">（默认勾选按收货人）</span></div><div class="scan-section-title">收货人信息 <button class="remaining-query-button" type="button">查询余件</button></div><table class="scan-summary-table"><thead><tr><th>收货人</th><th>库位</th><th>已扫</th><th>余</th></tr></thead><tbody><tr><td>王先生(VIP号9527)</td><td>洪合-H03-14</td><td>1</td><td class="remaining">5</td></tr><tr><td>李女士(VIP号9528)</td><td>洪合-H03-13</td><td>1</td><td class="remaining">3</td></tr></tbody></table><div class="scan-section-title">已扫描</div><div class="scanned-code-list"><div class="receiver"><h3 class="scanned-code-header"><span>HH2609290002</span><span>李女士(VIP号9528)</span><button class="remove-scanned-code" type="button">剔除</button></h3></div><div class="receiver"><h3 class="scanned-code-header"><span>HH2609290001</span><span>王先生(VIP号9527)</span><button class="remove-scanned-code" type="button">剔除</button></h3></div></div>';
+    page.querySelector('.pack-billing-button').onclick=function(){alert('演示：进入集包转开单页面');};
+    page.querySelector('.camera-scan-button').onclick=function(){alert('演示：调用手机相机扫描件码');};
+    page.querySelector('.remaining-query-button').onclick=function(){alert('演示：打开余件明细，可按件码查询');};
+    page.querySelectorAll('.remove-scanned-code').forEach(function(btn){btn.onclick=function(){btn.closest('.receiver').remove();};});
+  }
+  rebuild();
+})();
+</script>
+<script>
+(function(){
+  function bindRemaining(){
+    var button=document.querySelector('#app .scan-pack-final .remaining-query-button');
+    if(!button||button.dataset.bound==='1')return;
+    button.dataset.bound='1';
+    button.onclick=function(){
+      var mask=document.createElement('div');
+      mask.className='remaining-modal-mask';
+      mask.innerHTML='<div class="remaining-modal"><h2>余件明细</h2><table><thead><tr><th>件码</th><th>收货人</th><th>操作</th></tr></thead><tbody><tr data-code="HH260929000003" data-receiver="王先生(VIP号9527)" data-location="洪合-H03-14"><td>HH260929000003</td><td>王先生(VIP号9527)</td><td><div class="remaining-actions"><button class="remaining-item-add" data-permission="pinbao.manualAdd">添加</button><button class="remaining-item-query">查询</button></div></td></tr><tr data-code="HH260929000004" data-receiver="李女士(VIP号9528)" data-location="洪合-H03-13"><td>HH260929000004</td><td>李女士(VIP号9528)</td><td><div class="remaining-actions"><button class="remaining-item-add" data-permission="pinbao.manualAdd">添加</button><button class="remaining-item-query">查询</button></div></td></tr></tbody></table><div class="remaining-empty hidden">暂无余件</div><button class="remaining-close">关闭</button></div>';
+      var scanPage=button.closest('.scan-pack-final');
+      (scanPage||document.body).appendChild(mask);
+      var permissions=window.pinbaoDemoPermissions;
+      var canManualAdd=!Array.isArray(permissions)||permissions.indexOf('pinbao.manualAdd')!==-1;
+      if(!canManualAdd)mask.querySelectorAll('[data-permission="pinbao.manualAdd"]').forEach(function(item){item.remove();});
+      mask.querySelector('.remaining-close').onclick=function(){mask.remove();};
+      mask.querySelectorAll('.remaining-item-query').forEach(function(item){item.onclick=function(){alert('演示：跳转共用件码查询结果页面及数据');};});
+      mask.querySelectorAll('.remaining-item-add').forEach(function(item){item.onclick=function(){
+        var row=item.closest('tr');
+        var code=row.dataset.code;
+        var receiver=row.dataset.receiver;
+        var location=row.dataset.location;
+        var options=scanPage.querySelectorAll('.pack-option-group input[type="checkbox"]');
+        var checkReceiver=options[0]&&options[0].checked;
+        var checkLocation=options[1]&&options[1].checked;
+        var summaryRows=Array.from(scanPage.querySelectorAll('.scan-summary-table tbody tr'));
+        var summaryRow=summaryRows.find(function(current){return current.children[0].textContent.trim()===receiver;});
+        var receiverMismatch=checkReceiver&&!summaryRow;
+        var locationMismatch=checkLocation&&(!summaryRow||summaryRow.children[1].textContent.trim()!==location);
+        if(receiverMismatch||locationMismatch){
+          alert('语音告警声\n该件收货人或库位与当前批次不同，已阻止加入。去掉勾选条件重新添加后可继续。');
+          return;
+        }
+        var duplicated=Array.from(scanPage.querySelectorAll('.scanned-code-header span:first-child')).some(function(current){return current.textContent.trim()===code;});
+        if(duplicated){alert('该件码已在当前批次的已扫列表中，请勿重复添加。');return;}
+        var card=document.createElement('div');
+        card.className='receiver';
+        card.dataset.source='MANUAL_ADD';
+        card.innerHTML='<h3 class="scanned-code-header"><span>'+code+'</span><span>'+receiver+'</span><button class="remove-scanned-code" type="button">剔除</button></h3>';
+        card.querySelector('.remove-scanned-code').onclick=function(){card.remove();};
+        scanPage.querySelector('.scanned-code-list').prepend(card);
+        if(summaryRow){
+          summaryRow.children[2].textContent=String((Number(summaryRow.children[2].textContent)||0)+1);
+          summaryRow.children[3].textContent=String(Math.max(0,(Number(summaryRow.children[3].textContent)||0)-1));
+        }
+        row.remove();
+        if(!mask.querySelector('tbody tr'))mask.querySelector('.remaining-empty').classList.remove('hidden');
+      };});
+    };
+  }
+  bindRemaining();
+  setTimeout(bindRemaining,0);
+  setTimeout(bindRemaining,1300);
+})();
+</script>
+<style>
+.remaining-modal-mask{position:absolute;inset:0;background:#0006;z-index:9999;display:flex;align-items:flex-end;justify-content:center}
+.scan-pack-final{position:relative}
+.remaining-modal{width:100%;max-width:none;background:#fff;border-radius:16px 16px 0 0;padding:16px;box-sizing:border-box;box-shadow:0 -4px 18px #0002}
+.remaining-modal h2{margin:0 0 12px;font-size:18px}
+.remaining-modal table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}
+.remaining-modal th{background:#eaf1f6;text-align:left;padding:8px 6px}
+.remaining-modal td{border-bottom:1px solid #eef0f2;padding:9px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.remaining-modal th:nth-child(1),.remaining-modal td:nth-child(1){width:36%}.remaining-modal th:nth-child(2),.remaining-modal td:nth-child(2){width:38%}.remaining-modal th:nth-child(3),.remaining-modal td:nth-child(3){width:26%;text-align:right}
+.remaining-actions{display:flex;justify-content:flex-end;gap:4px}.remaining-item-add,.remaining-item-query,.remaining-close{border:1px solid #cfd6dd;border-radius:4px;background:#fff7ed;color:#0b3275;padding:5px 7px;cursor:pointer;font-size:12px}.remaining-item-add{background:#ff8f1f;border-color:#ff8f1f;color:#fff}
+.remaining-empty{text-align:center;color:#6b7280;padding:16px 0;font-size:12px}
+.remaining-close{display:block;width:100%;margin-top:14px;padding:9px;font-size:14px}
+</style>
+<script>
+(function(){
+  function addPackPhoto(){
+    var page=document.querySelector('#app .scan-pack-final');
+    var batch=page&&page.querySelector('.scan-batch-row');
+    if(!batch||page.querySelector('.pack-photo-field'))return;
+    var field=document.createElement('div');
+    field.className='pack-photo-field';
+    field.innerHTML='<label>集包照片（选填）</label><input type="file" accept="image/*">';
+    batch.insertAdjacentElement('afterend',field);
+  }
+  addPackPhoto();
+  window.addEventListener('load', function(){setTimeout(function(){
+    addPackPhoto();
+    var page=document.querySelector('#app .scan-pack-final');
+    if(!page)return;
+    page.querySelectorAll('.scanned-code-header').forEach(function(header){
+      var card=header.closest('.receiver');
+      if(!card)return;
+      if(!card.dataset.source)card.dataset.source='SCAN';
+    });
+  }, 3500);});
+})();
+</script>
+<style>
+.scan-pack-final .pack-photo-field{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #eef0f2;font-size:12px;color:#4b5563}
+.scan-pack-final .pack-photo-field label{white-space:nowrap}
+.scan-pack-final .pack-photo-field input{min-width:0;flex:1;font-size:12px}
+</style>
+<style>
+#app .phone.scan-pack-final{padding:14px;min-height:420px;font-size:13px;line-height:1.25}
+.scan-pack-final h2{font-size:17px!important;padding-bottom:8px!important;margin-bottom:6px!important}
+.scan-pack-final .scan-batch-row{padding:7px 0}
+.scan-pack-final .pack-option-group{padding:7px 0;font-size:13px}
+.scan-pack-final .scan-section-title{padding:7px 0 5px;font-size:12px}
+.scan-pack-final .scan-summary-table{font-size:12px}
+.scan-pack-final .scan-summary-table th{padding:6px 5px}
+.scan-pack-final .scan-summary-table td{padding:6px 5px}
+.scan-pack-final .scanned-code-list .receiver{margin:5px 0;padding:8px}
+.scan-pack-final .scanned-code-header{font-size:12px;line-height:18px}
+.scan-pack-final .scanned-code-list .receiver[data-source="MANUAL_ADD"]{color:#c62828;background:#fff5f5;border-color:#efb0b0}
+.scan-pack-final .remove-scanned-code{padding:3px 7px;font-size:11px}
+</style>
+<script>
+window.addEventListener('load', function () {
+  document.querySelectorAll('.phone').forEach(function (page) {
+    var title = page.querySelector('h2');
+    if (!title || title.textContent.trim() !== '拼包订单详情') return;
+    var payment = Array.from(page.querySelectorAll('.btn')).find(function (button) {
+      return button.textContent.trim() === '立即支付';
+    });
+    if (payment) page.appendChild(payment);
+  });
+});
+</script>
+<script>
+window.addEventListener('load', function () {
+  document.querySelectorAll('.phone').forEach(function (page) {
+    var title = page.querySelector('h2');
+    if (!title || title.textContent.trim() !== '拼包订单详情' || page.querySelector('.other-receiver-detail')) return;
+    var receiver = document.createElement('div');
+    receiver.className = 'receiver other-receiver-detail';
+    receiver.innerHTML = '<h3>收货人：陈先生（其他）</h3><div class="row"><span>电话</span><span>13912345678</span></div><div class="row"><span>详细地址</span><span>杭州市上城区四季青街道88号</span></div><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>件码</span><span>HH2609290005</span></div><div class="row"><span>库位</span><span>其他</span></div><div class="row"><span>拼包状态</span><span>待集包</span></div>';
+    page.appendChild(receiver);
+  });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var app = document.getElementById('app');
+  if (!app) return;
+  var page = document.getElementById('employee-order-list');
+  if (!page) return;
+  var banner = page.querySelector('.order-payment-banner');
+  if (!banner || banner.querySelector('.order-filter-button')) return;
+  banner.style.alignItems = 'center';
+  banner.style.justifyContent = 'space-between';
+  var filterButton = document.createElement('button');
+  filterButton.type = 'button';
+  filterButton.className = 'order-filter-button';
+  filterButton.textContent = '筛选';
+  banner.appendChild(filterButton);
+  var filter = document.createElement('div');
+  filter.className = 'order-filter-panel hidden';
+  filter.innerHTML = '<div class="field"><label>发货人</label><input placeholder="请输入发货人/厂家" /></div><div class="field"><label>收货人</label><input placeholder="请输入收货人" /></div><div class="field"><label>VIP号</label><input placeholder="请输入VIP号" /></div><div class="btn secondary">查询</div>';
+  banner.insertAdjacentElement('afterend', filter);
+  filterButton.onclick = function () { filter.classList.toggle('hidden'); };
+});
+</script>
+<style>
+#billing-list .billing-batch-card{padding:10px;margin:10px 0}
+#billing-list .billing-batch-card h3{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 9px;font-size:14px}
+#billing-list .billing-batch-time{font-size:11px;font-weight:400;color:#6b7280;white-space:nowrap}
+#billing-list .billing-goods-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}
+#billing-list .billing-goods-table th{padding:6px 5px;background:#eaf1f6;text-align:left;font-weight:600;white-space:nowrap}
+#billing-list .billing-goods-table td{padding:7px 5px;border-bottom:1px solid #eef0f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#billing-list .billing-goods-table th:nth-child(1),#billing-list .billing-goods-table td:nth-child(1){width:45%}
+#billing-list .billing-goods-table th:nth-child(2),#billing-list .billing-goods-table td:nth-child(2){width:33%}
+#billing-list .billing-goods-table th:nth-child(3),#billing-list .billing-goods-table td:nth-child(3),#billing-list .billing-goods-table th:nth-child(4),#billing-list .billing-goods-table td:nth-child(4){width:11%;text-align:right}
+#billing-list .billing-goods-table .remaining{color:#d93025;font-weight:600}
+#billing-list .billing-batch-card .btn{margin-top:12px}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var page = document.getElementById('billing-list');
+  if (!page || page.dataset.goodsTableReady === '1') return;
+  page.dataset.goodsTableReady = '1';
+  var cards = page.querySelectorAll(':scope > .receiver');
+  var batches = [
+    {
+      number: 'HB26092908',
+      time: '09-29 10:25',
+      rows: [
+        ['王先生(VIP号9527)', '洪合-H03-14', '1', '5'],
+        ['李女士(VIP号9528)', '洪合-H03-13', '1', '3']
+      ]
+    },
+    {
+      number: 'HB26092909',
+      time: '09-29 09:40',
+      rows: [
+        ['李女士(VIP号9528)', '四季青-S02-08', '2', '2'],
+        ['赵先生(VIP号9529)', '四季青-S02-09', '1', '1']
+      ]
+    }
+  ];
+  cards.forEach(function (card, index) {
+    var batch = batches[index];
+    if (!batch) return;
+    card.className = 'receiver billing-batch-card';
+    card.innerHTML = '<h3><span>批次 ' + batch.number + '</span><span class="billing-batch-time">' + batch.time + '</span></h3><table class="billing-goods-table"><thead><tr><th>收货人</th><th>库位</th><th>已扫</th><th>余</th></tr></thead><tbody>' + batch.rows.map(function (row) { return '<tr><td>' + row[0] + '</td><td>' + row[1] + '</td><td>' + row[2] + '</td><td class="remaining">' + row[3] + '</td></tr>'; }).join('') + '</tbody></table><div class="btn billing-detail-entry">进入批次详情</div>';
+  });
+  page.querySelectorAll('.billing-detail-entry').forEach(function (button) {
+    button.onclick = function () {
+      alert('开发提示：携带当前拼包批次号，跳转扫码集包页面及对应批次数据，可继续扫描加货或转开单。');
+    };
+  });
+});
+</script>
+<style>
+#scan-result{position:relative!important;overflow:hidden!important}
+#scan-result .code-action-row{display:flex;gap:8px;margin-top:14px}
+#scan-result .code-action-row button{flex:1;padding:9px;border:1px solid #d5dbe1;border-radius:5px;background:#fff7ed;color:#0b3275;cursor:pointer}
+#scan-result .code-action-row .void-code-button{background:#fff;color:#c62828;border-color:#e3a3a3}
+#scan-result .void-code-mask{position:absolute;inset:0;z-index:10020;display:flex;align-items:flex-end;background:rgba(0,0,0,.42)}
+#scan-result .void-code-dialog{width:100%;box-sizing:border-box;padding:16px;background:#fff;border-radius:14px 14px 0 0;box-shadow:0 -4px 18px rgba(0,0,0,.18)}
+#scan-result .void-code-dialog h3{margin:0 0 10px;font-size:17px}
+#scan-result .void-code-dialog .field{margin:9px 0}
+#scan-result .void-code-dialog select{width:100%;height:36px;box-sizing:border-box;border:1px solid #cfd6dd;border-radius:5px;background:#fff;padding:0 8px}
+#scan-result .void-code-warning{padding:9px;margin:9px 0;border-radius:5px;background:#fff3cd;color:#8a5a00;font-size:12px;line-height:1.5}
+#scan-result .void-code-dev-hint{padding:8px;margin:9px 0;border-radius:5px;background:#e8f7ed;color:#177245;font-size:12px;line-height:1.5}
+#scan-result .void-code-slider{width:100%;accent-color:#ff921f}
+#scan-result .void-code-progress{text-align:center;color:#6b7280;font-size:12px;margin-top:3px}
+#scan-result .void-code-actions{display:flex;gap:8px;margin-top:10px}
+#scan-result .void-code-actions button{flex:1;padding:9px;border:1px solid #cfd6dd;border-radius:5px;background:#fff7ed;color:#0b3275;cursor:pointer}
+#scan-result .void-code-actions .void-code-confirm{background:#ff921f;border-color:#ff921f;color:#fff}
+#scan-result .void-code-actions .void-code-confirm:disabled{background:#c9cdd2;border-color:#c9cdd2;cursor:not-allowed}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var page = document.getElementById('scan-result');
+  if (!page || page.querySelector('.void-code-button')) return;
+  var actions = document.createElement('div');
+  actions.className = 'code-action-row';
+  actions.innerHTML = '<button type="button" class="code-print-button">打印件码</button><button type="button" class="void-code-button">作废件码</button>';
+  page.appendChild(actions);
+  actions.querySelector('.code-print-button').onclick = function () { alert('演示：打印当前件码标签'); };
+  actions.querySelector('.void-code-button').onclick = function () {
+    if (page.querySelector('.void-code-mask')) return;
+    var sourceRow = page.querySelector('.scan-source-row');
+    var paymentRow = page.querySelector('.scan-payment-status-row');
+    var onlinePaid = sourceRow && sourceRow.textContent.indexOf('小程序') !== -1 && paymentRow && paymentRow.textContent.indexOf('已支付') !== -1;
+    var mask = document.createElement('div');
+    mask.className = 'void-code-mask';
+    mask.innerHTML = '<div class="void-code-dialog"><h3>确认作废件码</h3><div class="row"><span>件码</span><b>HH2609290002</b></div><div class="field"><label>作废原因</label><select><option>重复创建</option><option>货物取消发运</option><option>信息录入错误</option><option>其他</option></select></div><div class="void-code-warning"'+(onlinePaid?'':' style="display:none"')+'>作废后请联系管理员做退费处理</div><div class="void-code-dev-hint">开发提示：该功能受“件码作废”权限控制；已关联批次或运单的件码，确认后先从批次剔除，再作废件码。批次与运单号关系保持不变。</div><input class="void-code-slider" type="range" min="0" max="100" value="0"><div class="void-code-progress">向右滑动确认作废</div><div class="void-code-actions"><button type="button" class="void-code-cancel">取消</button><button type="button" class="void-code-confirm" disabled>确认作废</button></div></div>';
+    page.appendChild(mask);
+    var slider = mask.querySelector('.void-code-slider');
+    var confirm = mask.querySelector('.void-code-confirm');
+    var progress = mask.querySelector('.void-code-progress');
+    slider.oninput = function () {
+      var done = Number(slider.value) === 100;
+      confirm.disabled = !done;
+      progress.textContent = done ? '已完成滑动，可确认作废' : '向右滑动确认作废';
+    };
+    mask.querySelector('.void-code-cancel').onclick = function () { mask.remove(); };
+    confirm.onclick = function () {
+      if (confirm.disabled) return;
+      alert('演示：已从关联批次剔除并作废件码；记录操作人、时间、原因、原批次及运单号');
+      mask.remove();
+    };
+  };
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var app = document.getElementById('app');
+  if (!app || document.getElementById('employee-order-list')) return;
+  var appGrid = app.querySelector('.grid');
+  if (!appGrid) return;
+  var page = document.createElement('div');
+  page.className = 'phone';
+  page.id = 'employee-order-list';
+  page.innerHTML = '<h2>拼包下单记录</h2><div class="order-payment-banner"><button type="button" data-payment="paid">已支付</button><button type="button" data-payment="unpaid">未支付</button></div><div class="receiver" data-order-payment="paid"><h3>订单 HH20260929001</h3><div class="row"><span>拼包站</span><span>洪合拼包站</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>收货人</span><span>王先生、李女士</span></div><div class="row"><span>支付金额</span><b>¥200</b></div><div class="btn secondary">查看详情</div></div><div class="receiver" data-order-payment="unpaid"><h3>订单 HH20260929002</h3><div class="row"><span>拼包站</span><span>四季青拼包站</span></div><div class="row"><span>发货档口/厂家</span><span>义乌某厂家</span></div><div class="row"><span>收货人</span><span>赵先生</span></div><div class="row"><span>支付金额</span><b>¥160</b></div><div class="btn">立即支付</div></div>';
+  appGrid.insertBefore(page, appGrid.children[1] || null);
+  var buttons = page.querySelectorAll('.order-payment-banner button');
+  var cards = page.querySelectorAll('[data-order-payment]');
+  function showEmployeeOrders(type) {
+    cards.forEach(function(card){ card.style.display = card.dataset.orderPayment === type ? '' : 'none'; });
+    buttons.forEach(function(button){ button.classList.toggle('active', button.dataset.payment === type); });
+  }
+  buttons[0].onclick = function(){ showEmployeeOrders('paid'); };
+  buttons[1].onclick = function(){ showEmployeeOrders('unpaid'); };
+  showEmployeeOrders('paid');
+});
+</script>
+<style>
+#app > .grid > #employee-order-list { grid-column: 2; grid-row: 1; }
+#app > .grid > #employee-order-detail { grid-column: 3; grid-row: 1; }
+#app > .grid > #pickup-list { grid-column: 1; grid-row: 2; }
+#app > .grid > .phone:first-child { grid-column:1; grid-row:1; }
+#app > .grid > #pack-list { grid-column:2; grid-row:2; }
+#app > .grid > #billing-list { grid-column:1; grid-row:3; }
+#app > .grid > #batch-detail { grid-column:3; grid-row:3; }
+#app > .grid > #scan-result { grid-column:1; grid-row:4; }
+#pack-list .pack-time { display:none!important; }
+#mini > .grid > .phone:first-child .address-book-button { display:inline-flex!important; align-items:center!important; justify-content:center!important; width:60px!important; height:30px!important; box-sizing:border-box!important; margin:0 0 0 6px!important; padding:0 8px!important; border:1px solid #6b7280!important; border-radius:4px!important; background:#fff!important; color:#1f2937!important; font:13px/20px Arial,"Microsoft YaHei",sans-serif!important; cursor:pointer!important; vertical-align:middle!important; }
+#app .phone .warn { display:none!important; }
+#pickup-list > .receiver > .pickup-recipient { border:1px solid #cfd6dd!important; border-radius:6px!important; background:#f8fafc!important; padding:0 10px!important; margin:8px 0!important; }
+#pickup-list > .receiver > .pickup-recipient h3 { background:#eef3f7; margin:0 -10px!important; padding:8px 10px!important; border-radius:6px 6px 0 0; font-weight:600!important; }
+#pickup-list > .receiver > .pickup-recipient .row { padding:7px 0!important; }
+#employee-order-list .order-payment-banner .order-filter-button{margin-left:auto;border:1px solid #6b7280;background:#fff;color:#1f2937;padding:6px 10px;border-radius:4px;font-size:12px;cursor:pointer}
+#employee-order-list .order-payment-banner{display:flex!important;align-items:center;gap:6px}
+#employee-order-list .order-payment-banner .order-filter-button{margin-left:auto!important}
+#employee-order-list .order-filter-panel{padding:8px 10px;background:#f8fafc;border:1px solid #d5dbe1;border-radius:6px}
+#employee-order-list .order-filter-panel .field{display:flex;align-items:center;gap:8px;margin:6px 0}
+#employee-order-list .order-filter-panel label{flex:0 0 64px;font-size:12px;color:#4b5563}
+#employee-order-list .order-filter-panel input{flex:1;min-width:0;box-sizing:border-box;padding:7px;border:1px solid #cfd6dd;border-radius:4px;font-size:12px}
+#employee-order-list .order-filter-panel .btn{padding:6px 10px;font-size:12px;margin-top:8px}
+#employee-order-list .receiver h3 { display:flex; justify-content:space-between; align-items:center; }
+#employee-order-list .employee-order-time { font-size:12px; font-weight:400; color:#6b7280; }
+#employee-order-list .receiver .btn { margin-top:14px; }
+.other-receiver-detail { display:none!important; }
+.third-receiver-row { display:flex!important; visibility:visible!important; height:auto!important; overflow:visible!important; }
+#order-list > .receiver:first-of-type .row:nth-of-type(4) { position:relative; }
+#order-list > .receiver:first-of-type .row:nth-of-type(4)::after { content:'收货人3　　　　　　　　　陈先生（其他）'; display:block; position:absolute; left:0; right:0; top:100%; padding:10px 0; background:#fafbfc; border-bottom:1px solid #eef0f2; white-space:pre; }
+#order-list > .receiver:first-of-type .row:nth-of-type(5) { margin-top:40px; }
+#mini > .grid > .phone:nth-child(2) > .receiver:first-of-type .row:nth-of-type(4) { position:relative; }
+#mini > .grid > .phone:nth-child(2) > .receiver:first-of-type .row:nth-of-type(4)::after { content:'收货人3　　　　　　　　　陈先生（其他）'; display:block; position:absolute; left:0; right:0; top:100%; padding:10px 0; background:#fafbfc; border-bottom:1px solid #eef0f2; white-space:pre; }
+#mini > .grid > .phone:nth-child(2) > .receiver:first-of-type .row:nth-of-type(5) { margin-top:40px; }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var orderPage = document.getElementById('employee-order-list');
+  if (!orderPage || document.getElementById('employee-order-detail')) return;
+  var detail = document.createElement('div');
+  detail.className = 'phone';
+  detail.id = 'employee-order-detail';
+  detail.innerHTML = '<h2>拼包订单详情</h2><div class="row"><span>订单号</span><span>HH20260929001</span></div><div class="row"><span>拼包站</span><span>洪合拼包站</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>支付金额</span><b>¥200</b></div><div class="row"><span>支付状态</span><span>已支付</span></div><div class="receiver"><h3>收货人1：王先生(VIP号9527)</h3><div class="row"><span>内物件数</span><span>3</span></div><div class="row"><span>件码</span><span>HH2609290001</span></div><div class="row"><span>库位</span><span>洪合-H03-14</span></div><div class="row"><span>拼包状态</span><span>待集包</span></div></div><div class="receiver"><h3>收货人2：李女士(VIP号9528)</h3><div class="row"><span>内物件数</span><span>2</span></div><div class="row"><span>件码</span><span>HH2609290002</span></div><div class="row"><span>库位</span><span>洪合-H03-13</span></div><div class="row"><span>拼包状态</span><span>待集包</span></div></div>';
+  orderPage.insertAdjacentElement('afterend', detail);
+});
+</script>
+<script>
+function initVoidRecords() {
+  var app = document.getElementById('app');
+  if (!app) return;
+  var page = document.getElementById('employee-order-list');
+  if (!page) return;
+  var cards = page.querySelectorAll('[data-order-payment]');
+  var paid = cards[0], unpaid = cards[1];
+  if (paid) paid.innerHTML = '<h3><span>订单 HH20260929001</span><span class="employee-order-time">2026-09-29 15:30</span></h3><div class="row"><span>拼包站</span><span>洪合拼包站</span></div><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>收货人1</span><span>王先生(VIP号9527)</span></div><div class="row"><span>收货人2</span><span>李女士(VIP号9528)</span></div><div class="row"><span>支付金额</span><b>¥200</b></div><div style="display:flex;gap:8px"><div class="btn secondary" style="flex:1">打印件码</div><div class="btn secondary" style="flex:1">查看详情</div></div>';
+  if (unpaid) unpaid.innerHTML = '<h3><span>订单 HH20260929002</span><span class="employee-order-time">2026-09-29 14:20</span></h3><div class="row"><span>拼包站</span><span>四季青拼包站</span></div><div class="row"><span>发货档口/厂家</span><span>义乌某厂家</span></div><div class="row"><span>收货人1</span><span>赵先生(VIP号9529)</span></div><div class="row"><span>收货人2</span><span>钱女士(VIP号9530)</span></div><div class="row"><span>支付金额</span><b>¥160</b></div><div class="btn secondary">查看详情</div>';
+  var workbench = app.querySelector('.phone h2') && Array.from(app.querySelectorAll('.phone')).find(function (item) { return item.querySelector('h2') && item.querySelector('h2').textContent.trim() === '拼包工作台'; });
+  var appGrid = app.querySelector('.grid');
+  if (!workbench || !appGrid || document.getElementById('void-code-list')) return;
+  var scanPage = app.querySelector('.scan-pack-final');
+  var manualSample = scanPage && scanPage.querySelector('.scanned-code-list .receiver');
+  if (manualSample) manualSample.dataset.source = 'MANUAL_ADD';
+  var entry = document.createElement('div');
+  entry.className = 'row app-link void-record-entry';
+  entry.innerHTML = '<span>件码作废记录</span><b class="tag">2件</b>';
+  entry.onclick = function () { document.getElementById('void-code-list').scrollIntoView(); };
+  var workbenchActions = workbench.querySelector('.workbench-actions');
+  if (workbenchActions) workbench.insertBefore(entry, workbenchActions);
+  else workbench.appendChild(entry);
+  var page = document.createElement('div');
+  page.className = 'phone void-code-record-page';
+  page.id = 'void-code-list';
+  page.innerHTML = '<h2>件码作废记录</h2><div class="void-record-note">按件码展示已作废记录，恢复后从本列表移除并保留后台历史记录。</div><div class="void-record-card" data-code="HH2609290007"><h3><span>HH2609290007</span><span class="void-record-status">已作废</span></h3><div class="row"><span>发货档口/厂家</span><span>杭州某档口</span></div><div class="row"><span>收货人</span><span>王先生(VIP号9527)</span></div><div class="row"><span>库位</span><span>洪合-H03-14</span></div><div class="row"><span>创建时间</span><span>2026-09-29 10:20</span></div><div class="row"><span>作废时间</span><span>2026-09-29 14:35</span></div><div class="row"><span>作废原因</span><span>标签损坏或重复创建</span></div><div class="row"><span>作废操作人</span><span>张三</span></div><div class="row"><span>原拼包批次/运单</span><span>HB26092908 / YT123456789</span></div><button type="button" class="void-record-restore" data-permission="pinbao.restoreCode">恢复件码</button></div><div class="void-record-card" data-code="HH2609290008"><h3><span>HH2609290008</span><span class="void-record-status">已作废</span></h3><div class="row"><span>发货档口/厂家</span><span>义乌某厂家</span></div><div class="row"><span>收货人</span><span>陈先生（其他）</span></div><div class="row"><span>库位</span><span>其他</span></div><div class="row"><span>创建时间</span><span>2026-09-29 11:05</span></div><div class="row"><span>作废时间</span><span>2026-09-29 15:10</span></div><div class="row"><span>作废原因</span><span>货物取消发运</span></div><div class="row"><span>作废操作人</span><span>李四</span></div><div class="row"><span>原拼包批次/运单</span><span>HB26092909 / 未开单</span></div><button type="button" class="void-record-restore" data-permission="pinbao.restoreCode">恢复件码</button></div>';
+  var billedPage = document.getElementById('billed-list');
+  if (billedPage && !billedPage.querySelector('[data-billed-example="2"]')) {
+    var secondBilled = document.createElement('div');
+    secondBilled.className = 'receiver billed-batch-card';
+    secondBilled.dataset.billedExample = '2';
+    secondBilled.innerHTML = '<h3><span>批次 HB26092907</span><span class="billed-time">开单时间 09-29 11:40</span></h3><div class="row billed-waybill-row"><span>集包运单号</span><a href="#logistics">YT123456790 ↗</a></div><table class="billed-goods-table"><thead><tr><th>收货人</th><th>库位</th><th>已扫</th><th>余</th></tr></thead><tbody><tr><td>赵先生(VIP号9529)</td><td>四季青-S02-08</td><td>5</td><td>0</td></tr><tr><td>钱女士(VIP号9530)</td><td>四季青-S02-09</td><td>3</td><td class="remaining">1</td></tr></tbody></table><div class="billed-actions"><button type="button" class="billed-query">查询运单</button><button type="button" class="billed-share">分享</button><button type="button" class="billed-add">加货</button></div>';
+    billedPage.appendChild(secondBilled);
+  }
+  if (billedPage) {
+    billedPage.insertAdjacentElement('afterend', page);
+    page.style.setProperty('grid-column', '3', 'important');
+    page.style.setProperty('grid-row', '3', 'important');
+    page.style.setProperty('align-self', 'start', 'important');
+  } else {
+    appGrid.appendChild(page);
+  }
+  var style = document.createElement('style');
+  style.textContent = '.void-record-entry{display:flex!important;justify-content:space-between;align-items:center}.void-code-record-page{position:relative}.void-record-note{padding:8px 10px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:5px;color:#6b7280;font-size:12px;line-height:1.5}.void-record-card{margin:10px 0;padding:10px;border:1px solid #cfd6dd;border-radius:6px;background:#fafbfc}.void-record-card h3{display:flex;justify-content:space-between;align-items:center;margin:0;padding-bottom:8px;border-bottom:1px solid #eef0f2;font-size:13px}.void-record-status{font-size:12px;font-weight:400;color:#c62828}.void-record-card .row{padding:7px 0;border-bottom:1px solid #eef0f2;font-size:12px}.void-record-restore{margin-top:10px;width:100%;padding:8px;border:1px solid #c62828;border-radius:4px;background:#fff;color:#c62828;cursor:pointer;font-size:12px}.void-record-mask{position:absolute;inset:0;z-index:20;display:flex;align-items:flex-end;background:rgba(0,0,0,.42)}.void-record-dialog{width:100%;box-sizing:border-box;padding:14px;background:#fff;border-radius:14px 14px 0 0;box-shadow:0 -4px 18px rgba(0,0,0,.18)}.void-record-dialog h3{margin:0 0 10px;font-size:16px}.void-record-dialog .void-restore-warning{padding:8px;background:#fff3cd;color:#8a5a00;border-radius:4px;font-size:12px;line-height:1.5}.void-record-slider{width:100%;accent-color:#ff921f;margin:14px 0 2px}.void-record-progress{text-align:center;color:#6b7280;font-size:12px}.void-record-actions{display:flex;gap:8px;margin-top:10px}.void-record-actions button{flex:1;padding:8px;border:1px solid #cfd6dd;border-radius:4px;background:#fff7ed;color:#0b3275;cursor:pointer}.void-record-actions .void-record-confirm{background:#ff921f;border-color:#ff921f;color:#fff}.void-record-actions .void-record-confirm:disabled{background:#c9cdd2;border-color:#c9cdd2;cursor:not-allowed}';
+  document.head.appendChild(style);
+  page.querySelectorAll('.void-record-restore').forEach(function (button) {
+    button.onclick = function () {
+      var permissions = window.pinbaoDemoPermissions;
+      if (Array.isArray(permissions) && permissions.indexOf('pinbao.restoreCode') === -1) { alert('当前账号无恢复件码权限'); return; }
+      if (page.querySelector('.void-record-mask')) return;
+      var card = button.closest('.void-record-card');
+      var mask = document.createElement('div');
+      mask.className = 'void-record-mask';
+      mask.innerHTML = '<div class="void-record-dialog"><h3>确认恢复件码</h3><div class="row"><span>件码</span><b>'+card.dataset.code+'</b></div><div class="void-restore-warning">恢复后件码可重新查询、打印和加入拼包，请确认业务人员已核实。</div><input class="void-record-slider" type="range" min="0" max="100" value="0"><div class="void-record-progress">向右滑动确认恢复</div><div class="void-record-actions"><button type="button" class="void-record-cancel">取消</button><button type="button" class="void-record-confirm" disabled>确认恢复</button></div></div>';
+      page.appendChild(mask);
+      var slider = mask.querySelector('.void-record-slider');
+      var confirm = mask.querySelector('.void-record-confirm');
+      slider.oninput = function () { confirm.disabled = Number(slider.value) < 100; };
+      mask.querySelector('.void-record-cancel').onclick = function () { mask.remove(); };
+      confirm.onclick = function () { if (confirm.disabled) return; card.remove(); mask.remove(); entry.querySelector('.tag').textContent = page.querySelectorAll('.void-record-card').length+'件'; alert('演示：件码已恢复，记录恢复操作人和时间'); };
+    };
+  });
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initVoidRecords);
+} else {
+  initVoidRecords();
+}
+function placeVoidRecords() {
+  setTimeout(function () {
+    var page = document.getElementById('void-code-list');
+    var grid = document.querySelector('#app>.grid');
+    if (!page || !grid) return;
+    if (page.parentElement !== grid) grid.appendChild(page);
+    page.style.setProperty('grid-column', '3', 'important');
+    page.style.setProperty('grid-row', '3', 'important');
+    page.style.setProperty('align-self', 'start', 'important');
+  }, 0);
+}
+if (document.readyState === 'complete') placeVoidRecords();
+else window.addEventListener('load', placeVoidRecords);
+</script>
